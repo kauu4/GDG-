@@ -13,22 +13,31 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Fast Standard SVG Charts -->
+  <!-- Canvas Confetti for Celebration -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     
-    /* Realistic Ink Fountain Pen Static Cursor */
+    /* 🏹 Bow Emoji Cursor (Left-Facing & Compact) */
     body, button, input, select, textarea, a, div {
-      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none'><path d='M12 19l7-7 3 3-7 7-3-3z' fill='%236366f1'/><path d='M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z' fill='%234f46e5' stroke='%23312e81' stroke-width='1'/><path d='M2 2l5 5' stroke='%23fbbf24' stroke-width='1.5'/><circle cx='2' cy='2' r='1' fill='%23000000'/></svg>") 2 2, auto !important;
+      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><text y='18' font-size='18'>🏹</text></svg>") 0 0, auto !important;
     }
 
-    /* Animated Border Light Running Glow Effect on Hover */
-    @keyframes borderGlow {
-      0% { border-color: #6366f1; box-shadow: 0 0 8px rgba(99, 102, 241, 0.6); }
-      50% { border-color: #06b6d4; box-shadow: 0 0 16px rgba(6, 182, 212, 0.8); }
-      100% { border-color: #6366f1; box-shadow: 0 0 8px rgba(99, 102, 241, 0.6); }
+    /* Arrow Shot Click Animation */
+    .arrow-shot-animation {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      font-size: 16px;
+      animation: shootArrow 0.5s ease-out forwards;
     }
 
+    @keyframes shootArrow {
+      0% { transform: translate(0, 0) scale(1.2); opacity: 1; }
+      100% { transform: translate(-80px, -80px) scale(0.6); opacity: 0; }
+    }
+
+    /* Image Hover Outline Effect */
     .image-card-hover {
       transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
@@ -36,8 +45,8 @@
       transform: scale(1.08);
     }
     .image-card-container:hover {
-      animation: borderGlow 2s infinite linear;
-      border-radius: 0.75rem;
+      box-shadow: 0 0 12px rgba(99, 102, 241, 0.7);
+      border-color: #6366f1;
     }
   </style>
 </head>
@@ -51,17 +60,17 @@
     const GEMINI_API_KEY = ""; 
     const WEATHER_API_KEY = ""; 
 
-    // Fast Native SVG Bar Chart Component for Zero-Lag Loading
-    function FastBarChart({ data, dataKey, color }) {
+    // Quantity-Based Fast SVG Bar Chart Component
+    function QuantityBarChart({ data, dataKey, color }) {
       const maxValue = Math.max(...data.map(d => d[dataKey]));
       return (
-        <div className="w-full h-44 flex items-end justify-between gap-3 pt-6 pb-2 px-2">
+        <div className="w-full h-40 flex items-end justify-between gap-3 pt-6 pb-2 px-2">
           {data.map((item, idx) => {
             const heightPct = Math.round((item[dataKey] / maxValue) * 100);
             return (
               <div key={idx} className="flex-1 flex flex-col items-center h-full justify-end group relative">
-                <div className="text-[10px] text-slate-400 mb-1 opacity-0 group-hover:opacity-100 transition">
-                  ₹{item[dataKey]}
+                <div className="text-[10px] text-indigo-400 mb-1 opacity-0 group-hover:opacity-100 transition font-bold">
+                  {item[dataKey]} Units
                 </div>
                 <div 
                   style={{ height: `${heightPct}%`, backgroundColor: color }}
@@ -77,53 +86,77 @@
       );
     }
 
-    const analyticsData = [
-      { name: 'Escape Matrix', sellVolume: 185, buyDemand: 210 },
-      { name: 'Headphones', sellVolume: 120, buyDemand: 150 },
-      { name: 'Lab Coat', sellVolume: 98, buyDemand: 130 },
-      { name: 'Desk Lamp', sellVolume: 86, buyDemand: 110 },
-      { name: 'Graphing Calc', sellVolume: 72, buyDemand: 95 }
+    // Top 5 Item Quantities Data
+    const quantityAnalyticsData = [
+      { name: 'Escape Matrix', sellQty: 185, buyQty: 210 },
+      { name: 'Headphones', sellQty: 120, buyQty: 150 },
+      { name: 'USB Charger', sellQty: 98, buyQty: 130 },
+      { name: 'DSA Textbook', sellQty: 86, buyQty: 110 },
+      { name: 'Graphing Calc', sellQty: 72, buyQty: 95 }
     ];
 
+    // 20+ Sample Products (Textbooks, Headphones, Chargers, Lab Gear)
     const initialListings = [
       { id: '1', title: 'Escape the Matrix', description: 'Ultimate campus survival & productivity guide book.', price: 499, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500', isMine: false },
-      { id: '2', title: 'Studio Headphones', description: 'Noise-canceling campus studio headphones.', price: 2499, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500', isMine: true },
-      { id: '3', title: 'Chemistry Lab Kit', description: 'Lab coat and safety goggles combo set.', price: 650, category: 'Lab Supplies', status: 'sold', image_url: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=500', isMine: true },
-      { id: '4', title: 'Desk Organizer', description: 'Ergonomic metal desk organizer holder.', price: 350, category: 'Essentials', status: 'available', image_url: 'https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?w=500', isMine: false },
-      { id: '5', title: 'Scientific Calculator', description: 'Advanced scientific graphing calculator.', price: 1800, category: 'Cheaper than your College', status: 'available', image_url: 'https://images.unsplash.com/photo-1611117775350-ac3950990985?w=500', isMine: false },
-      { id: '6', title: 'Drawing Board', description: 'Engineering Graphics drawing board set.', price: 850, category: 'Others', status: 'available', image_url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=500', isMine: false },
+      { id: '2', title: 'Data Structures & Algorithms', description: 'Core CS concepts textbook with C/C++ examples.', price: 550, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=500', isMine: false },
+      { id: '3', title: 'Physics for Engineers Vol 1', description: 'Standard reference book for engineering physics.', price: 420, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=500', isMine: false },
+      { id: '4', title: 'Organic Chemistry Handbook', description: 'Complete reaction mechanism study guide.', price: 600, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=500', isMine: false },
+      { id: '5', title: 'Digital Electronics Systems', description: 'Logic gates and microprocessors manual.', price: 480, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=500', isMine: false },
+      { id: '6', title: 'Sony Over-Ear Studio Headphones', description: 'Noise-canceling deep bass study headphones.', price: 2499, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500', isMine: true },
+      { id: '7', title: 'Anker Fast Type-C Charger 65W', description: 'Ultra-fast laptop and mobile wall adapter.', price: 1299, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=500', isMine: false },
+      { id: '8', title: 'JBL Wireless Sports Earbuds', description: 'Sweatproof Bluetooth earphones for campus gym.', price: 1899, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500', isMine: false },
+      { id: '9', title: 'Apple 20W USB-C Power Adapter', description: 'Original fast charger brick for iPhones.', price: 1499, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1622445268465-843d63d03713?w=500', isMine: false },
+      { id: '10', title: 'Boat Bassheads Wired Earphones', description: 'Tangle-free durable auxiliary wired headphones.', price: 399, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=500', isMine: false },
+      { id: '11', title: 'Samsung 25W Super Fast Charger', description: 'Type-C to Type-C fast charging kit.', price: 999, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1585338107529-13afc5f02586?w=500', isMine: false },
+      { id: '12', title: 'Sennheiser Studio Monitor Headphones', description: 'Hi-Fi professional audio headphones.', price: 3499, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=500', isMine: false },
+      { id: '13', title: 'Multi-Plug Surge Protector Extension', description: '4-Socket power board with dual USB ports.', price: 799, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500', isMine: false },
+      { id: '14', title: 'Realme Buds Wireless Neckband', description: '17-Hour battery neckband wireless earphone.', price: 1199, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?w=500', isMine: false },
+      { id: '15', title: 'MagSafe Magnetic Wireless Charger', description: 'Qi Wireless charging pad for dorm desk.', price: 1599, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1617839625591-e5a789593135?w=500', isMine: false },
+      { id: '16', title: 'Chemistry Lab Coat & Safety Goggles', description: 'Standard cotton lab coat set.', price: 650, category: 'Lab Supplies', status: 'sold', image_url: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=500', isMine: true },
+      { id: '17', title: 'Ergonomic Study Desk Lamp', description: 'Warm LED lamp with touch controls.', price: 799, category: 'Essentials', status: 'available', image_url: 'https://images.unsplash.com/photo-1534353436294-0dbd4bdac845?w=500', isMine: false },
+      { id: '18', title: 'Casio FX-991EX Scientific Calculator', description: 'Non-programmable exam approved calculator.', price: 1250, category: 'Cheaper than your College', status: 'available', image_url: 'https://images.unsplash.com/photo-1611117775350-ac3950990985?w=500', isMine: false },
+      { id: '19', title: 'Insulated Thermal Water Bottle 1L', description: 'Keeps water cold for 24 hours.', price: 450, category: 'Essentials', status: 'available', image_url: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500', isMine: false },
+      { id: '20', title: 'Engineering Drafting Mini-Drafter', description: 'Precision graphics tool with carrying canvas bag.', price: 650, category: 'Others', status: 'available', image_url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=500', isMine: false },
+    ];
+
+    // Incognito Stealth Mode Items
+    const incognitoListings = [
+      { id: 'inc-1', title: 'Secret Vape Pod Mod 5000', description: 'Discreet rechargeable flavor pod.', price: 1200, category: 'Incognito Special', image_url: 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?w=500' },
+      { id: 'inc-2', title: 'Stealth Black Undergarments 3-Pack', description: 'Unmarked plain delivery box.', price: 899, category: 'Incognito Special', image_url: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=500' },
+      { id: 'inc-3', title: 'Discreet Mint Nicotine Pouches', description: 'Sealed pocket pack.', price: 350, category: 'Incognito Special', image_url: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500' }
     ];
 
     function App() {
-      // Auth State
-      const [isAuthenticated, setIsAuthenticated] = useState(false);
-      const [username, setUsername] = useState('');
+      // LocalStorage Cache Initialization
+      const [isAuthenticated, setIsAuthenticated] = useState(() => localStorage.getItem('matrix_auth') === 'true');
+      const [username, setUsername] = useState(() => localStorage.getItem('matrix_user') || '');
       const [password, setPassword] = useState('');
+      const [listings, setListings] = useState(() => {
+        const saved = localStorage.getItem('matrix_listings');
+        return saved ? JSON.parse(saved) : initialListings;
+      });
+      const [wishlist, setWishlist] = useState(() => {
+        const saved = localStorage.getItem('matrix_wishlist');
+        return saved ? JSON.parse(saved) : [];
+      });
 
-      // World Mode Toggle: "In Matrix" (Buyer View) vs "Escaped Matrix" (Seller View)
-      const [matrixWorld, setMatrixWorld] = useState('in'); // 'in' or 'escaped'
+      // Navigation & World Pages
+      const [activePage, setActivePage] = useState('explore'); // 'explore' | 'escaped'
+      const [showOrdersModal, setShowOrdersModal] = useState(false);
+      const [isIncognito, setIsIncognito] = useState(false);
 
-      // UI State
-      const [darkMode, setDarkMode] = useState(true);
-      const [activeTab, setActiveTab] = useState('explore');
-      const [listings, setListings] = useState(initialListings);
+      // Filters & Search
       const [searchQuery, setSearchQuery] = useState('');
       const [selectedCategory, setSelectedCategory] = useState('All');
-      
-      // Wishlist State
-      const [wishlist, setWishlist] = useState([]);
-      const [wishlistName, setWishlistName] = useState('My Matrix Wishlist');
+      const [wishlistName, setWishlistName] = useState('My Favorites');
       const [toastMessage, setToastMessage] = useState('');
 
-      // Header Banner Popup
-      const [showHumorBanner, setShowHumorBanner] = useState(true);
+      // Uniform Timer Popup (1 Min Timer)
+      const [showUniformTimer, setShowUniformTimer] = useState(false);
+      const [timerSeconds, setTimerSeconds] = useState(60);
 
-      // Time & Weather
-      const [time, setTime] = useState('');
-      const [weather, setWeather] = useState(null);
-
-      // Create Modal State
-      const [showModal, setShowModal] = useState(false);
+      // Create Sell Modal
+      const [showSellModal, setShowSellModal] = useState(false);
       const [formTitle, setFormTitle] = useState('');
       const [formCategory, setFormCategory] = useState('Textbooks');
       const [formPrice, setFormPrice] = useState('');
@@ -131,42 +164,85 @@
       const [formImage, setFormImage] = useState('https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500');
       const [isGenerating, setIsGenerating] = useState(false);
 
-      // Ref for backdrop click closing modal
-      const modalRef = useRef();
+      // Celebration Overlay State
+      const [celebrationMsg, setCelebrationMsg] = useState('');
+
+      const ordersModalRef = useRef();
+      const sellModalRef = useRef();
 
       useEffect(() => {
         if (window.lucide) window.lucide.createIcons();
       });
 
-      // Clock & Weather
+      // Cache Persistence
       useEffect(() => {
-        const updateTime = () => setTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
-        updateTime();
-        const timer = setInterval(updateTime, 1000);
+        localStorage.setItem('matrix_listings', JSON.stringify(listings));
+      }, [listings]);
 
-        const fetchWeather = async () => {
-          try {
-            if (!WEATHER_API_KEY) {
-              setWeather({ temp: 24, condition: 'Sunny' });
-              return;
-            }
-            const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Bengaluru&units=metric&appid=${WEATHER_API_KEY}`);
-            const data = await res.json();
-            if (data.main) {
-              setWeather({ temp: Math.round(data.main.temp), condition: data.weather[0].main });
-            }
-          } catch {
-            setWeather({ temp: 24, condition: 'Sunny' });
-          }
+      useEffect(() => {
+        localStorage.setItem('matrix_wishlist', JSON.stringify(wishlist));
+      }, [wishlist]);
+
+      // Click Arrow Shot Animation Listener
+      useEffect(() => {
+        const handleArrowClick = (e) => {
+          const arrowEl = document.createElement('div');
+          arrowEl.className = 'arrow-shot-animation';
+          arrowEl.innerText = '🏹';
+          arrowEl.style.left = `${e.clientX}px`;
+          arrowEl.style.top = `${e.clientY}px`;
+          document.body.appendChild(arrowEl);
+          setTimeout(() => arrowEl.remove(), 500);
         };
-
-        fetchWeather();
-        return () => clearInterval(timer);
+        window.addEventListener('click', handleArrowClick);
+        return () => window.removeEventListener('click', handleArrowClick);
       }, []);
+
+      // 1-Minute Junior Uniform Timer trigger upon login
+      useEffect(() => {
+        if (isAuthenticated) {
+          setShowUniformTimer(true);
+          const interval = setInterval(() => {
+            setTimerSeconds(prev => {
+              if (prev <= 1) {
+                clearInterval(interval);
+                setShowUniformTimer(false);
+                return 0;
+              }
+              return prev - 1;
+            });
+          }, 1000);
+          return () => clearInterval(interval);
+        }
+      }, [isAuthenticated]);
 
       const triggerToast = (msg) => {
         setToastMessage(msg);
         setTimeout(() => setToastMessage(''), 3000);
+      };
+
+      // Confetti & Celebration Trigger
+      const triggerCelebration = (actionText) => {
+        setCelebrationMsg(actionText);
+        if (window.confetti) {
+          window.confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+        }
+        setTimeout(() => setCelebrationMsg(''), 4000);
+      };
+
+      const handleLogin = (e) => {
+        e.preventDefault();
+        if (username && password) {
+          setIsAuthenticated(true);
+          localStorage.setItem('matrix_auth', 'true');
+          localStorage.setItem('matrix_user', username);
+          triggerToast(`Logged in as ${username}`);
+        }
+      };
+
+      const handleLogout = () => {
+        setIsAuthenticated(false);
+        localStorage.removeItem('matrix_auth');
       };
 
       const toggleWishlist = (id, title) => {
@@ -179,22 +255,11 @@
         }
       };
 
-      const handleLogin = (e) => {
-        e.preventDefault();
-        if (username && password) {
-          setIsAuthenticated(true);
-          triggerToast(`Logged in as ${username}`);
-        }
-      };
-
-      // Handle Image File Upload (JPG/PNG)
       const handleImageUpload = (e) => {
         const file = e.target.files[0];
         if (file) {
           const reader = new FileReader();
-          reader.onloadend = () => {
-            setFormImage(reader.result);
-          };
+          reader.onloadend = () => setFormImage(reader.result);
           reader.readAsDataURL(file);
         }
       };
@@ -205,13 +270,12 @@
         try {
           if (!GEMINI_API_KEY) {
             setTimeout(() => {
-              setFormDesc(`Pristine condition ${formTitle} under ${formCategory}. Escape the matrix and grab this campus essential!`);
+              setFormDesc(`Pristine condition ${formTitle} under ${formCategory}. Essential item for campus students!`);
               setIsGenerating(false);
             }, 600);
             return;
           }
-
-          const prompt = `Write a compelling, concise 3-sentence marketplace description for a college student selling "${formTitle}" in category "${formCategory}".`;
+          const prompt = `Write a concise 3-sentence marketplace description for "${formTitle}" in category "${formCategory}".`;
           const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -239,34 +303,37 @@
           isMine: true
         };
         setListings([newListing, ...listings]);
-        setShowModal(false);
+        setShowSellModal(false);
         setFormTitle('');
         setFormPrice('');
         setFormDesc('');
-        triggerToast(`Listed "${formTitle}" for sale!`);
+        triggerCelebration(`Listing Published! You are already better than the college you study in! 🎓🚀`);
       };
 
       const toggleStatus = (id) => {
         setListings(listings.map(item => item.id === id ? { ...item, status: item.status === 'available' ? 'sold' : 'available' } : item));
+        triggerCelebration(`Order Updated! You are already better than the college you study in! 🎉`);
       };
 
-      // Close modal on click outside
-      const handleBackdropClick = (e) => {
-        if (modalRef.current && e.target === modalRef.current) {
-          setShowModal(false);
-        }
+      // Modal Backdrop Click Close Logic
+      const handleModalBackdropClick = (e, ref, closeFn) => {
+        if (ref.current && e.target === ref.current) closeFn();
       };
 
       const myProducts = listings.filter(item => item.isMine);
       const soldItems = myProducts.filter(item => item.status === 'sold');
       const totalEarned = soldItems.reduce((sum, item) => sum + item.price, 0);
 
-      const filteredListings = listings.filter(item => {
-        const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) || item.description.toLowerCase().includes(searchQuery.toLowerCase());
+      // Smooth Case-Insensitive Search Engine
+      const currentDataset = isIncognito ? incognitoListings : listings;
+      const filteredListings = currentDataset.filter(item => {
+        const query = searchQuery.toLowerCase().trim();
+        const matchesSearch = item.title.toLowerCase().includes(query) || 
+                              item.description.toLowerCase().includes(query) ||
+                              item.category.toLowerCase().includes(query);
         const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory;
-        const matchesWishlist = activeTab === 'wishlist' ? wishlist.includes(item.id) : true;
-        const matchesSellerMode = matrixWorld === 'escaped' ? item.isMine : true;
-        return matchesSearch && matchesCategory && matchesWishlist && matchesSellerMode;
+        const matchesPageFilter = activePage === 'escaped' ? item.isMine : true;
+        return matchesSearch && matchesCategory && matchesPageFilter;
       });
 
       // PAGE 1: LOGIN GATE
@@ -321,281 +388,280 @@
       }
 
       return (
-        <div className={`min-h-screen flex flex-col ${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
+        <div className={`min-h-screen flex flex-col transition-colors duration-500 ${isIncognito ? 'bg-black text-rose-100' : 'bg-slate-950 text-slate-100'}`}>
           
-          {/* HUMOROUS POPUP BANNER AT TOP */}
-          {showHumorBanner && (
-            <div className="bg-gradient-to-r from-amber-500 via-indigo-600 to-rose-500 text-white text-xs py-2 px-4 flex items-center justify-between font-medium shadow-md">
-              <div className="flex items-center gap-2 mx-auto">
-                <i data-lucide="sparkles" className="w-4 h-4 animate-spin"></i>
-                <span>"Don't put all your faith in campus placements—start hustling early, or just sit back and admire all the stuff you bought but never use!"</span>
-              </div>
-              <button onClick={() => setShowHumorBanner(false)} className="hover:opacity-80">
-                <i data-lucide="x" className="w-4 h-4"></i>
-              </button>
+          {/* PARTY CELEBRATION OVERLAY */}
+          {celebrationMsg && (
+            <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-r from-emerald-500 via-indigo-600 to-amber-500 text-white px-6 py-3 rounded-2xl shadow-2xl font-bold text-center animate-bounce border-2 border-white">
+              🎉 Congratulations! {celebrationMsg}
             </div>
           )}
 
-          {/* TOAST POPUP */}
+          {/* TOAST NOTIFICATION */}
           {toastMessage && (
-            <div className="fixed bottom-5 right-5 z-50 bg-indigo-600 text-white px-4 py-2.5 rounded-xl shadow-2xl text-sm font-medium flex items-center gap-2">
+            <div className="fixed bottom-16 right-5 z-50 bg-indigo-600 text-white px-4 py-2.5 rounded-xl shadow-2xl text-sm font-medium flex items-center gap-2">
               <i data-lucide="bell" className="w-4 h-4"></i>
               <span>{toastMessage}</span>
             </div>
           )}
 
+          {/* JUNIOR UNIFORM TIMER FLOATING POPUP (1 MINUTE TIMER) */}
+          {showUniformTimer && (
+            <div className="fixed bottom-4 left-4 z-40 bg-red-950/90 border border-red-700 text-red-200 p-3 rounded-xl shadow-2xl max-w-sm flex items-center gap-3 backdrop-blur-md">
+              <span className="text-2xl font-bold text-red-400">{timerSeconds}s</span>
+              <div className="text-[11px] leading-tight">
+                <p className="font-bold text-white">Sell your uniform here for your juniors otherwise burn it and sell the ashes! 😡🔥👕</p>
+              </div>
+              <button onClick={() => setShowUniformTimer(false)} className="text-red-400 hover:text-white">
+                <i data-lucide="x" className="w-4 h-4"></i>
+              </button>
+            </div>
+          )}
+
           {/* GLOBAL HEADER */}
-          <header className={`sticky top-0 z-40 border-b ${darkMode ? 'bg-slate-900/90 border-slate-800' : 'bg-white/90 border-slate-200'} backdrop-blur`}>
+          <header className={`sticky top-0 z-30 border-b backdrop-blur ${isIncognito ? 'bg-zinc-950/90 border-rose-950' : 'bg-slate-900/90 border-slate-800'}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
               
-              <div className="flex items-center gap-2 cursor-pointer" onClick={() => setActiveTab('explore')}>
+              <div className="flex items-center gap-2 cursor-pointer" onClick={() => setActivePage('explore')}>
                 <i data-lucide="zap" className="w-7 h-7 text-indigo-400"></i>
                 <span className="font-bold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
                   Escape the Matrix
                 </span>
               </div>
 
-              {/* WORLD TOGGLE SWITCH: IN MATRIX vs ESCAPED (SELLER MODE) */}
-              <div className="flex items-center bg-slate-800/90 p-1 rounded-full border border-slate-700">
+              {/* 3 DISTINCT UN-REPEATED NAVIGATION OPTIONS */}
+              <div className="flex items-center gap-1 sm:gap-2 bg-slate-800/80 p-1 rounded-full border border-slate-700 text-xs">
                 <button
-                  onClick={() => { setMatrixWorld('in'); setActiveTab('explore'); }}
-                  className={`px-3 py-1 rounded-full text-xs font-semibold transition ${matrixWorld === 'in' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-white'}`}
+                  onClick={() => setActivePage('explore')}
+                  className={`px-3 py-1.5 rounded-full font-semibold transition ${activePage === 'explore' ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white'}`}
                 >
-                  In Matrix (Buyer)
+                  Explore Feed
                 </button>
+
                 <button
-                  onClick={() => { setMatrixWorld('escaped'); setActiveTab('myproducts'); }}
-                  className={`px-3 py-1 rounded-full text-xs font-semibold transition ${matrixWorld === 'escaped' ? 'bg-emerald-600 text-white shadow' : 'text-slate-400 hover:text-white'}`}
+                  onClick={() => setActivePage('escaped')}
+                  className={`px-3 py-1.5 rounded-full font-semibold transition ${activePage === 'escaped' ? 'bg-emerald-600 text-white' : 'text-slate-300 hover:text-white'}`}
                 >
-                  Escaped (Seller)
+                  Escaped (Stock & Seller)
+                </button>
+
+                <button
+                  onClick={() => setShowOrdersModal(true)}
+                  className="px-3 py-1.5 rounded-full font-semibold text-slate-300 hover:text-white flex items-center gap-1"
+                >
+                  <i data-lucide="shopping-bag" className="w-3.5 h-3.5 text-amber-400"></i>
+                  My Orders
                 </button>
               </div>
 
-              {/* CLOCK & WEATHER */}
-              <div className={`hidden lg:flex items-center gap-4 px-3 py-1 rounded-full border text-xs ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-slate-100 border-slate-200'}`}>
-                <span className="text-indigo-400 font-medium">{time}</span>
-                <span className="text-amber-400 font-medium">{weather ? `${weather.temp}°C, ${weather.condition}` : ''}</span>
-              </div>
-
-              {/* ACTIONS */}
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setDarkMode(!darkMode)}
-                  className={`p-2 rounded-lg border ${darkMode ? 'border-slate-800 text-amber-300' : 'border-slate-200 text-slate-700'}`}
-                >
-                  <i data-lucide={darkMode ? 'sun' : 'moon'} className="w-4 h-4"></i>
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('explore')}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium ${activeTab === 'explore' ? 'bg-indigo-600 text-white' : 'hover:bg-slate-800'}`}
-                >
-                  Explore
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('myproducts')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium ${activeTab === 'myproducts' ? 'bg-indigo-600 text-white' : 'hover:bg-slate-800'}`}
-                >
-                  <i data-lucide="package" className="w-4 h-4 text-emerald-400"></i>
-                  <span className="hidden sm:inline">My Products</span>
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('wishlist')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium ${activeTab === 'wishlist' ? 'bg-indigo-600 text-white' : 'hover:bg-slate-800'}`}
-                >
-                  <i data-lucide="heart" className="w-4 h-4 text-rose-400"></i>
-                  <span className="hidden sm:inline">Wishlist ({wishlist.length})</span>
+              {/* USER PROFILE & LOGOUT */}
+              <div className="flex items-center gap-3 text-xs">
+                <span className="hidden sm:inline text-slate-400">👤 {username}</span>
+                <button onClick={handleLogout} className="text-slate-400 hover:text-rose-400">
+                  <i data-lucide="log-out" className="w-4 h-4"></i>
                 </button>
               </div>
             </div>
           </header>
 
-          {/* MAIN CONTAINER */}
-          {activeTab === 'myproducts' ? (
-            /* MY PRODUCTS PAGE (ORDERS, EARNINGS & STATUS MANAGEMENT) */
-            <div className="p-6 max-w-7xl mx-auto space-y-8 w-full flex-1">
-              <div>
-                <h2 className="text-2xl font-bold">My Listed Products & Order Management</h2>
-                <p className="text-xs text-slate-400 mt-1">Only manage mark-as-sold and availability status for your own items here.</p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className={`p-6 rounded-2xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
-                  <p className="text-xs text-slate-400 font-medium uppercase">Total Sales Revenue</p>
-                  <h3 className="text-3xl font-extrabold text-emerald-400 mt-1">₹{totalEarned}</h3>
-                  <p className="text-xs text-slate-500 mt-1">{soldItems.length} items sold</p>
+          {/* MAIN PAGE CONTAINER */}
+          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+            
+            {/* TOP QUANTITY ANALYTICS AT TOP OF EXPLORE */}
+            {activePage === 'explore' && !isIncognito && (
+              <div className="mb-8 space-y-3">
+                <div>
+                  <h2 className="text-xl font-bold">📊 Top 5 Campus Item Quantities</h2>
+                  <p className="text-xs text-slate-400">Live units in circulation and purchase demand</p>
                 </div>
 
-                <div className={`p-6 rounded-2xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
-                  <p className="text-xs text-slate-400 font-medium uppercase">Active Seller Mode Status</p>
-                  <h3 className="text-2xl font-bold text-indigo-400 mt-1">
-                    {matrixWorld === 'escaped' ? 'Escaped the Matrix (Seller Mode Active)' : 'In Matrix (Buyer View)'}
-                  </h3>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="p-4 rounded-2xl border bg-slate-900 border-slate-800">
+                    <h3 className="text-xs font-bold text-slate-400 uppercase">Top 5 Most Sold Item Quantities</h3>
+                    <QuantityBarChart data={quantityAnalyticsData} dataKey="sellQty" color="#6366f1" />
+                  </div>
+
+                  <div className="p-4 rounded-2xl border bg-slate-900 border-slate-800">
+                    <h3 className="text-xs font-bold text-slate-400 uppercase">Top 5 Highest Demanded Quantities</h3>
+                    <QuantityBarChart data={quantityAnalyticsData} dataKey="buyQty" color="#10b981" />
+                  </div>
                 </div>
               </div>
+            )}
 
-              {/* MY PRODUCTS LIST */}
-              <div className={`p-6 rounded-2xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
-                <h3 className="font-bold mb-4">My Items ({myProducts.length})</h3>
-                {myProducts.length === 0 ? (
-                  <p className="text-xs text-slate-500">You haven't posted any items for sale yet.</p>
-                ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {myProducts.map(item => (
-                      <div key={item.id} className={`p-4 rounded-xl border ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-slate-50 border-slate-200'}`}>
-                        <div className="h-36 w-full rounded-lg overflow-hidden mb-3">
-                          <img src={item.image_url} className="w-full h-full object-cover" />
-                        </div>
-                        <div className="flex justify-between items-center mb-2">
-                          <h4 className="font-bold text-sm">{item.title}</h4>
-                          <span className="font-bold text-indigo-400">₹{item.price}</span>
-                        </div>
+            {/* ESCAPED PAGE SPECIFIC HEADING & SELL BUTTON (NO REPEAT ON MAIN) */}
+            {activePage === 'escaped' && (
+              <div className="mb-8 p-6 rounded-2xl border bg-slate-900 border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                  <h2 className="text-2xl font-bold text-emerald-400">Seller World & Stock Portal</h2>
+                  <p className="text-xs text-slate-400 mt-1">Track your active listings, manage sold items, and publish new stock.</p>
+                </div>
+                <button
+                  onClick={() => setShowSellModal(true)}
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-5 py-2 rounded-xl text-sm flex items-center gap-2 shadow-lg shadow-emerald-600/30"
+                >
+                  <i data-lucide="plus-circle" className="w-4 h-4"></i>
+                  Sell an Item
+                </button>
+              </div>
+            )}
+
+            {/* SEARCH & CATEGORY FILTERS */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+              <div className="relative flex-1 w-full sm:max-w-md">
+                <i data-lucide="search" className="absolute left-3 top-2.5 h-4 w-4 text-slate-400"></i>
+                <input
+                  type="text"
+                  placeholder="Fast case-insensitive search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2 border rounded-lg text-sm outline-none bg-slate-900 border-slate-800 focus:border-indigo-500"
+                />
+              </div>
+
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="bg-slate-900 border border-slate-800 text-sm rounded-lg px-3 py-2 outline-none w-full sm:w-auto"
+              >
+                <option value="All">All Categories</option>
+                <option value="Textbooks">Textbooks</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Lab Supplies">Lab Supplies</option>
+                <option value="Essentials">Essentials</option>
+                <option value="Others">Others</option>
+                <option value="Cheaper than your College">Cheaper than your College</option>
+              </select>
+            </div>
+
+            {/* PRODUCT LISTINGS GRID */}
+            {filteredListings.length === 0 ? (
+              <div className="text-center py-16 rounded-2xl border bg-slate-900 border-slate-800">
+                <p className="text-slate-500">No items found matching your search.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredListings.map((item) => {
+                  const isWishlisted = wishlist.includes(item.id);
+                  return (
+                    <div key={item.id} className="image-card-container rounded-xl overflow-hidden border transition flex flex-col bg-slate-900 border-slate-800">
+                      <div className="relative h-48 w-full bg-slate-800 overflow-hidden">
+                        <img src={item.image_url} alt={item.title} className="image-card-hover w-full h-full object-cover" />
+                        {item.status === 'sold' && (
+                          <div className="absolute inset-0 bg-black/75 flex items-center justify-center">
+                            <span className="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">SOLD</span>
+                          </div>
+                        )}
                         <button
-                          onClick={() => toggleStatus(item.id)}
-                          className={`w-full py-1.5 rounded text-xs font-semibold flex items-center justify-center gap-1 mt-2 ${
-                            item.status === 'available' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                          }`}
+                          onClick={() => toggleWishlist(item.id, item.title)}
+                          className="absolute top-2 right-2 p-2 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white transition z-10"
                         >
-                          <i data-lucide="check-circle-2" className="w-3.5 h-3.5"></i>
-                          Mark as {item.status === 'available' ? 'Sold' : 'Available'}
+                          <i data-lucide="heart" className={`w-4 h-4 ${isWishlisted ? 'fill-rose-400 text-rose-400' : 'text-slate-300'}`}></i>
                         </button>
                       </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            /* EXPLORE FEED WITH FAST SVG CHARTS AT TOP */
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
-              
-              {/* TOP ANALYTICS DASHBOARD AT TOP */}
-              {activeTab === 'explore' && (
-                <div className="mb-8 space-y-3">
-                  <div>
-                    <h2 className="text-xl font-bold">🔥 Top 5 Campus Marketplace Trends</h2>
-                    <p className="text-xs text-slate-400">Fast SVG analytics loading instantly at the top</p>
-                  </div>
 
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div className={`p-4 rounded-2xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
-                      <h3 className="text-xs font-bold text-slate-400 uppercase">Top 5 Most Sold Products</h3>
-                      <FastBarChart data={analyticsData} dataKey="sellVolume" color="#6366f1" />
-                    </div>
-
-                    <div className={`p-4 rounded-2xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
-                      <h3 className="text-xs font-bold text-slate-400 uppercase">Top 5 Highest Demanded / Bought Products</h3>
-                      <FastBarChart data={analyticsData} dataKey="buyDemand" color="#10b981" />
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* SEARCH & FILTERS */}
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-                <div className="relative flex-1 w-full sm:max-w-md">
-                  <i data-lucide="search" className="absolute left-3 top-2.5 h-4 w-4 text-slate-400"></i>
-                  <input
-                    type="text"
-                    placeholder="Search campus products..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className={`w-full pl-9 pr-4 py-2 border rounded-lg text-sm outline-none ${darkMode ? 'bg-slate-900 border-slate-800 focus:border-indigo-500' : 'bg-white border-slate-200'}`}
-                  />
-                </div>
-
-                <div className="flex items-center gap-3 w-full sm:w-auto">
-                  <select
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                    className={`border text-sm rounded-lg px-3 py-2 outline-none ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}
-                  >
-                    <option value="All">All Categories</option>
-                    <option value="Textbooks">Textbooks</option>
-                    <option value="Electronics">Electronics</option>
-                    <option value="Lab Supplies">Lab Supplies</option>
-                    <option value="Essentials">Essentials</option>
-                    <option value="Others">Others</option>
-                    <option value="Cheaper than your College">Cheaper than your College</option>
-                  </select>
-
-                  <button
-                    onClick={() => setShowModal(true)}
-                    className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition whitespace-nowrap shadow-lg shadow-indigo-600/30"
-                  >
-                    <i data-lucide="plus" className="w-4 h-4"></i>
-                    Sell an Item
-                  </button>
-                </div>
-              </div>
-
-              {/* PRODUCT GRID */}
-              {filteredListings.length === 0 ? (
-                <div className={`text-center py-16 rounded-2xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
-                  <p className="text-slate-500">No items found matching your filter.</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredListings.map((item) => {
-                    const isWishlisted = wishlist.includes(item.id);
-                    return (
-                      <div key={item.id} className={`image-card-container rounded-xl overflow-hidden border transition flex flex-col ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
-                        {/* Image Expansion & Running Outline on Hover */}
-                        <div className="relative h-48 w-full bg-slate-800 overflow-hidden">
-                          <img src={item.image_url} alt={item.title} className="image-card-hover w-full h-full object-cover" />
-                          {item.status === 'sold' && (
-                            <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
-                              <span className="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">SOLD</span>
-                            </div>
-                          )}
-                          <button
-                            onClick={() => toggleWishlist(item.id, item.title)}
-                            className="absolute top-2 right-2 p-2 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white transition z-10"
-                          >
-                            <i data-lucide="heart" className={`w-4 h-4 ${isWishlisted ? 'fill-rose-400 text-rose-400' : 'text-slate-300'}`}></i>
-                          </button>
+                      <div className="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="flex justify-between items-start mb-2">
+                            <h3 className="font-semibold text-slate-100">{item.title}</h3>
+                            <span className="font-bold text-indigo-400">₹{item.price}</span>
+                          </div>
+                          <p className="text-xs text-slate-400 line-clamp-2 mb-4">{item.description}</p>
                         </div>
 
-                        <div className="p-5 flex-1 flex flex-col justify-between">
-                          <div>
-                            <div className="flex justify-between items-start mb-2">
-                              <h3 className="font-semibold">{item.title}</h3>
-                              <span className="font-bold text-indigo-400">₹{item.price}</span>
-                            </div>
-                            <p className="text-xs text-slate-400 line-clamp-2 mb-4">{item.description}</p>
-                          </div>
+                        <div className="flex items-center justify-between border-t border-slate-800 pt-3">
+                          <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-400">
+                            <i data-lucide="tag" className="w-3 h-3"></i>
+                            {item.category}
+                          </span>
 
-                          <div className="flex items-center justify-between border-t border-slate-800/50 pt-3">
-                            <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded ${darkMode ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-600'}`}>
-                              <i data-lucide="tag" className="w-3 h-3"></i>
-                              {item.category}
-                            </span>
-                            <span className="text-[10px] text-slate-500">
-                              {item.isMine ? 'Your Item' : 'Student Seller'}
-                            </span>
-                          </div>
+                          {/* ACTION BUTTONS (SELLER STATUS ONLY IN ESCAPED PAGE) */}
+                          {activePage === 'escaped' && item.isMine ? (
+                            <button
+                              onClick={() => toggleStatus(item.id)}
+                              className={`text-xs font-medium px-2.5 py-1 rounded transition flex items-center gap-1 ${
+                                item.status === 'available' ? 'text-amber-300 bg-amber-500/20' : 'text-emerald-300 bg-emerald-500/20'
+                              }`}
+                            >
+                              <i data-lucide="check-circle-2" className="w-3 h-3"></i>
+                              Mark {item.status === 'available' ? 'Sold' : 'Available'}
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => triggerCelebration(`Buy Order Initiated for "${item.title}"! You are already better than the college you study in! 🛍️🎉`)}
+                              className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-md font-medium"
+                            >
+                              Buy Now
+                            </button>
+                          )}
                         </div>
                       </div>
-                    );
-                  })}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </main>
+
+          {/* FLOATING MY ORDERS MODAL (CLOSES ON CLICK OUTSIDE) */}
+          {showOrdersModal && (
+            <div 
+              ref={ordersModalRef}
+              onClick={(e) => handleModalBackdropClick(e, ordersModalRef, () => setShowOrdersModal(false))}
+              className="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4 backdrop-blur-xs"
+            >
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-6 text-white">
+                <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                  <h3 className="text-lg font-bold flex items-center gap-2">
+                    <i data-lucide="shopping-bag" className="w-5 h-5 text-amber-400"></i>
+                    My Orders & Financial Summary
+                  </h3>
+                  <button onClick={() => setShowOrdersModal(false)} className="text-slate-400 hover:text-white">
+                    <i data-lucide="x" className="w-5 h-5"></i>
+                  </button>
                 </div>
-              )}
-            </main>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-slate-800/80 p-4 rounded-xl border border-slate-700">
+                    <p className="text-[10px] text-slate-400 uppercase font-bold">Total Sales Earned</p>
+                    <p className="text-2xl font-extrabold text-emerald-400 mt-1">₹{totalEarned}</p>
+                  </div>
+                  <div className="bg-slate-800/80 p-4 rounded-xl border border-slate-700">
+                    <p className="text-[10px] text-slate-400 uppercase font-bold">Purchases Completed</p>
+                    <p className="text-2xl font-extrabold text-indigo-400 mt-1">₹1,150</p>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-xs font-bold text-slate-400 uppercase mb-2">Sold Items ({soldItems.length})</h4>
+                  {soldItems.length === 0 ? (
+                    <p className="text-xs text-slate-500">No sold orders recorded yet.</p>
+                  ) : (
+                    <div className="space-y-2 max-h-40 overflow-y-auto">
+                      {soldItems.map(i => (
+                        <div key={i.id} className="flex justify-between items-center bg-slate-800/40 p-2 rounded text-xs">
+                          <span>{i.title}</span>
+                          <span className="font-bold text-emerald-400">+₹{i.price}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           )}
 
-          {/* SELL AN ITEM MODAL (CLOSES ON BACKDROP CLICK) */}
-          {showModal && (
+          {/* SELL AN ITEM MODAL (CLOSES ON CLICK OUTSIDE) */}
+          {showSellModal && (
             <div 
-              ref={modalRef}
-              onClick={handleBackdropClick}
-              className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 backdrop-blur-xs"
+              ref={sellModalRef}
+              onClick={(e) => handleModalBackdropClick(e, sellModalRef, () => setShowSellModal(false))}
+              className="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4 backdrop-blur-xs"
             >
-              <div className={`rounded-2xl max-w-md w-full p-6 shadow-2xl border ${darkMode ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'}`}>
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl text-white">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-lg font-bold">Sell an Item</h2>
-                  <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-white">
+                  <button onClick={() => setShowSellModal(false)} className="text-slate-400 hover:text-white">
                     <i data-lucide="x" className="w-5 h-5"></i>
                   </button>
                 </div>
@@ -606,10 +672,10 @@
                     <input
                       type="text"
                       required
-                      placeholder="e.g., Escape the Matrix"
+                      placeholder="e.g., Data Structures Textbook"
                       value={formTitle}
                       onChange={(e) => setFormTitle(e.target.value)}
-                      className={`w-full border rounded px-3 py-1.5 text-sm outline-none ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-slate-50 border-slate-200'}`}
+                      className="w-full bg-slate-800 border border-slate-700 rounded px-3 py-1.5 text-sm outline-none"
                     />
                   </div>
 
@@ -619,7 +685,7 @@
                       <select
                         value={formCategory}
                         onChange={(e) => setFormCategory(e.target.value)}
-                        className={`w-full border rounded px-2 py-1.5 text-sm outline-none ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-slate-50 border-slate-200'}`}
+                        className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-sm outline-none"
                       >
                         <option value="Textbooks">Textbooks</option>
                         <option value="Electronics">Electronics</option>
@@ -637,12 +703,11 @@
                         placeholder="499"
                         value={formPrice}
                         onChange={(e) => setFormPrice(e.target.value)}
-                        className={`w-full border rounded px-3 py-1.5 text-sm outline-none ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-slate-50 border-slate-200'}`}
+                        className="w-full bg-slate-800 border border-slate-700 rounded px-3 py-1.5 text-sm outline-none"
                       />
                     </div>
                   </div>
 
-                  {/* JPG / PNG Image File Attachment */}
                   <div>
                     <label className="block text-xs font-medium mb-1">Attach Image (JPG / PNG)</label>
                     <input
@@ -671,21 +736,21 @@
                       required
                       value={formDesc}
                       onChange={(e) => setFormDesc(e.target.value)}
-                      className={`w-full border rounded p-2 text-sm outline-none ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-slate-50 border-slate-200'}`}
+                      className="w-full bg-slate-800 border border-slate-700 rounded p-2 text-sm outline-none"
                     ></textarea>
                   </div>
 
                   <div className="flex justify-end gap-2 pt-2">
                     <button
                       type="button"
-                      onClick={() => setShowModal(false)}
+                      onClick={() => setShowSellModal(false)}
                       className="px-4 py-1.5 text-sm text-slate-400 hover:bg-slate-800 rounded"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="px-4 py-1.5 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-500 font-medium"
+                      className="px-4 py-1.5 text-sm bg-emerald-600 hover:bg-emerald-500 text-white rounded font-medium"
                     >
                       Publish Listing
                     </button>
@@ -694,6 +759,23 @@
               </div>
             </div>
           )}
+
+          {/* INCOGNITO STEALTH MODE TOGGLE (BOTTOM RIGHT CORNER) */}
+          <div className="fixed bottom-4 right-4 z-40">
+            <button
+              onClick={() => {
+                setIsIncognito(!isIncognito);
+                triggerToast(isIncognito ? 'Exited Incognito Mode' : '🕵️‍♂️ Incognito Secret Mode Enabled!');
+              }}
+              className={`px-3 py-2 rounded-full text-xs font-bold border shadow-2xl flex items-center gap-2 transition ${
+                isIncognito ? 'bg-rose-950 border-rose-700 text-rose-300' : 'bg-slate-900 border-slate-700 text-slate-300 hover:bg-slate-800'
+              }`}
+            >
+              <i data-lucide="eye-off" className="w-4 h-4 text-rose-400"></i>
+              <span>{isIncognito ? 'Exit Incognito Mode' : 'Incognito Mode 🕵️‍♂️'}</span>
+            </button>
+          </div>
+
         </div>
       );
     }
