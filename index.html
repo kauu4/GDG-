@@ -13,7 +13,7 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Canvas Confetti for Celebration -->
+  <!-- Canvas Confetti for Explosions -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <!-- Firebase App & Auth SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -28,22 +28,37 @@
       cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><g transform='scale(-1, 1) translate(-24, 0)'><text y='18' font-size='18'>🏹</text></g></svg>") 0 0, auto !important;
     }
 
-    /* Circular Smooth Arrow Flying Animation Targetting Top Banner */
+    /* 🏹 Smooth Arrow Flying Animation targeting top banner */
     .arrow-flying-celebration {
       position: fixed;
       z-index: 9999;
-      font-size: 24px;
+      font-size: 32px;
       pointer-events: none;
-      animation: circularFlyToPop 4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      animation: circularFlyToPop 2.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
     }
 
     @keyframes circularFlyToPop {
-      0% { top: 70%; left: 50%; transform: rotate(0deg) scale(1); opacity: 1; }
-      25% { top: 50%; left: 75%; transform: rotate(90deg) scale(0.9); opacity: 1; }
-      50% { top: 30%; left: 50%; transform: rotate(180deg) scale(0.8); opacity: 1; }
-      75% { top: 50%; left: 25%; transform: rotate(270deg) scale(0.7); opacity: 1; }
-      90% { top: 18%; left: 50%; transform: rotate(360deg) scale(0.6); opacity: 1; }
-      100% { top: 12%; left: 50%; transform: rotate(360deg) scale(0.2); opacity: 0; }
+      0% { top: 80%; left: 50%; transform: rotate(0deg) scale(1.2); opacity: 1; }
+      30% { top: 50%; left: 75%; transform: rotate(120deg) scale(1); opacity: 1; }
+      60% { top: 30%; left: 25%; transform: rotate(240deg) scale(0.9); opacity: 1; }
+      90% { top: 15%; left: 50%; transform: rotate(360deg) scale(0.8); opacity: 1; }
+      100% { top: 10%; left: 50%; transform: rotate(360deg) scale(0.2); opacity: 0; }
+    }
+
+    /* Full Page Explosion Shockwave CSS Animation */
+    .explosion-shockwave {
+      position: fixed;
+      inset: 0;
+      z-index: 9998;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(99,102,241,0.4) 0%, rgba(16,185,129,0.2) 50%, rgba(0,0,0,0) 80%);
+      animation: shockwavePulse 0.8s ease-out forwards;
+    }
+
+    @keyframes shockwavePulse {
+      0% { transform: scale(0.2); opacity: 1; }
+      50% { opacity: 0.8; }
+      100% { transform: scale(2.5); opacity: 0; }
     }
 
     /* Image Hover Outline Effect */
@@ -54,8 +69,21 @@
       transform: scale(1.08);
     }
     .image-card-container:hover {
-      box-shadow: 0 0 12px rgba(99, 102, 241, 0.7);
+      box-shadow: 0 0 14px rgba(99, 102, 241, 0.8);
       border-color: #6366f1;
+    }
+
+    /* 🌀 Experimental 3D Spectrum Library View CSS */
+    .perspective-spectrum {
+      perspective: 1200px;
+    }
+    .spectrum-grid {
+      transform-style: preserve-3d;
+      transform: rotateX(8deg) rotateY(-5deg);
+      transition: transform 0.5s ease-out;
+    }
+    .spectrum-grid:hover {
+      transform: rotateX(2deg) rotateY(0deg);
     }
   </style>
 </head>
@@ -63,16 +91,16 @@
 
   <div id="root"></div>
 
-  <!-- FIREBASE INITIALIZATION SCRIPT -->
+  <!-- FIREBASE INITIALIZATION SCRIPT WITH YOUR API KEYS -->
   <script>
     const firebaseConfig = {
-        apiKey: "AIzaSyAJwzQOqGYYV1YKgfvyuknrzrCOrI6OXYc",
-  authDomain: "escape-the-matrix-76050.firebaseapp.com",
-  projectId: "escape-the-matrix-76050",
-  storageBucket: "escape-the-matrix-76050.firebasestorage.app",
-  messagingSenderId: "862745449376",
-  appId: "1:862745449376:web:7e147198e47b268ddd0ac5",
-  measurementId: "G-4884XYRRF3"
+      apiKey: "AIzaSyAJwzQOqGYYV1YKgfvyuknrzrCOrI6OXYc",
+      authDomain: "escape-the-matrix-76050.firebaseapp.com",
+      projectId: "escape-the-matrix-76050",
+      storageBucket: "escape-the-matrix-76050.firebasestorage.app",
+      messagingSenderId: "862745449376",
+      appId: "1:862745449376:web:7e147198e47b268ddd0ac5",
+      measurementId: "G-4884XYRRF3"
     };
     
     if (!firebase.apps.length) {
@@ -122,53 +150,55 @@
       { name: 'Graphing Calc', sellQty: 72, buyQty: 95 }
     ];
 
-    // Restored 20 Sample Products
+    // 20+ Sample Products with Explicit Stock Quantities
     const initialListings = [
-      { id: '1', title: 'Escape the Matrix', description: 'Ultimate campus survival & productivity guide book.', price: 499, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500', sellerName: 'Student Seller', sellerEmail: 'student1@university.edu', isIncognito: false },
-      { id: '2', title: 'Data Structures & Algorithms', description: 'Core CS concepts textbook with C/C++ examples.', price: 550, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=500', sellerName: 'Student Seller', sellerEmail: 'student2@university.edu', isIncognito: false },
-      { id: '3', title: 'Physics for Engineers Vol 1', description: 'Standard reference book for engineering physics.', price: 420, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=500', sellerName: 'Student Seller', sellerEmail: 'student3@university.edu', isIncognito: false },
-      { id: '4', title: 'Organic Chemistry Handbook', description: 'Complete reaction mechanism study guide.', price: 600, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=500', sellerName: 'Student Seller', sellerEmail: 'student4@university.edu', isIncognito: false },
-      { id: '5', title: 'Digital Electronics Systems', description: 'Logic gates and microprocessors manual.', price: 480, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=500', sellerName: 'Student Seller', sellerEmail: 'student5@university.edu', isIncognito: false },
-      { id: '6', title: 'Sony Over-Ear Studio Headphones', description: 'Noise-canceling deep bass study headphones.', price: 2499, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500', sellerName: 'Student Seller', sellerEmail: 'student6@university.edu', isMine: true },
-      { id: '7', title: 'Anker Fast Type-C Charger 65W', description: 'Ultra-fast laptop and mobile wall adapter.', price: 1299, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=500', sellerName: 'Student Seller', sellerEmail: 'student7@university.edu', isIncognito: false },
-      { id: '8', title: 'JBL Wireless Sports Earbuds', description: 'Sweatproof Bluetooth earphones for campus gym.', price: 1899, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500', sellerName: 'Student Seller', sellerEmail: 'student8@university.edu', isIncognito: false },
-      { id: '9', title: 'Apple 20W USB-C Power Adapter', description: 'Original fast charger brick for iPhones.', price: 1499, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1622445268465-843d63d03713?w=500', sellerName: 'Student Seller', sellerEmail: 'student9@university.edu', isIncognito: false },
-      { id: '10', title: 'Boat Bassheads Wired Earphones', description: 'Tangle-free durable auxiliary wired headphones.', price: 399, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=500', sellerName: 'Student Seller', sellerEmail: 'student10@university.edu', isIncognito: false },
-      { id: '11', title: 'Samsung 25W Super Fast Charger', description: 'Type-C to Type-C fast charging kit.', price: 999, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1585338107529-13afc5f02586?w=500', sellerName: 'Student Seller', sellerEmail: 'student11@university.edu', isIncognito: false },
-      { id: '12', title: 'Sennheiser Studio Monitor Headphones', description: 'Hi-Fi professional audio headphones.', price: 3499, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=500', sellerName: 'Student Seller', sellerEmail: 'student12@university.edu', isIncognito: false },
-      { id: '13', title: 'Multi-Plug Surge Protector Extension', description: '4-Socket power board with dual USB ports.', price: 799, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500', sellerName: 'Student Seller', sellerEmail: 'student13@university.edu', isIncognito: false },
-      { id: '14', title: 'Realme Buds Wireless Neckband', description: '17-Hour battery neckband wireless earphone.', price: 1199, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?w=500', sellerName: 'Student Seller', sellerEmail: 'student14@university.edu', isIncognito: false },
-      { id: '15', title: 'MagSafe Magnetic Wireless Charger', description: 'Qi Wireless charging pad for dorm desk.', price: 1599, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1617839625591-e5a789593135?w=500', sellerName: 'Student Seller', sellerEmail: 'student15@university.edu', isIncognito: false },
-      { id: '16', title: 'Chemistry Lab Coat & Safety Goggles', description: 'Standard cotton lab coat set.', price: 650, category: 'Lab Supplies', status: 'sold', image_url: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=500', sellerName: 'Student Seller', sellerEmail: 'student16@university.edu', isMine: true },
-      { id: '17', title: 'Ergonomic Study Desk Lamp', description: 'Warm LED lamp with touch controls.', price: 799, category: 'Essentials', status: 'available', image_url: 'https://images.unsplash.com/photo-1534353436294-0dbd4bdac845?w=500', sellerName: 'Student Seller', sellerEmail: 'student17@university.edu', isIncognito: false },
-      { id: '18', title: 'Casio FX-991EX Scientific Calculator', description: 'Non-programmable exam approved calculator.', price: 1250, category: 'Cheaper than your College', status: 'available', image_url: 'https://images.unsplash.com/photo-1611117775350-ac3950990985?w=500', sellerName: 'Student Seller', sellerEmail: 'student18@university.edu', isIncognito: false },
-      { id: '19', title: 'Insulated Thermal Water Bottle 1L', description: 'Keeps water cold for 24 hours.', price: 450, category: 'Essentials', status: 'available', image_url: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500', sellerName: 'Student Seller', sellerEmail: 'student19@university.edu', isIncognito: false },
-      { id: '20', title: 'Engineering Drafting Mini-Drafter', description: 'Precision graphics tool with carrying canvas bag.', price: 650, category: 'Others', status: 'available', image_url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=500', sellerName: 'Student Seller', sellerEmail: 'student20@university.edu', isIncognito: false },
+      { id: '1', title: 'Escape the Matrix', description: 'Ultimate campus survival & productivity guide book.', price: 499, category: 'Textbooks', status: 'available', stock: 12, image_url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500', sellerName: 'Student Seller', sellerEmail: 'student1@university.edu', isIncognito: false },
+      { id: '2', title: 'Data Structures & Algorithms', description: 'Core CS concepts textbook with C/C++ examples.', price: 550, category: 'Textbooks', status: 'available', stock: 8, image_url: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=500', sellerName: 'Student Seller', sellerEmail: 'student2@university.edu', isIncognito: false },
+      { id: '3', title: 'Physics for Engineers Vol 1', description: 'Standard reference book for engineering physics.', price: 420, category: 'Textbooks', status: 'available', stock: 15, image_url: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=500', sellerName: 'Student Seller', sellerEmail: 'student3@university.edu', isIncognito: false },
+      { id: '4', title: 'Organic Chemistry Handbook', description: 'Complete reaction mechanism study guide.', price: 600, category: 'Textbooks', status: 'available', stock: 5, image_url: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=500', sellerName: 'Student Seller', sellerEmail: 'student4@university.edu', isIncognito: false },
+      { id: '5', title: 'Digital Electronics Systems', description: 'Logic gates and microprocessors manual.', price: 480, category: 'Textbooks', status: 'available', stock: 9, image_url: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=500', sellerName: 'Student Seller', sellerEmail: 'student5@university.edu', isIncognito: false },
+      { id: '6', title: 'Sony Over-Ear Studio Headphones', description: 'Noise-canceling deep bass study headphones.', price: 2499, category: 'Electronics', status: 'available', stock: 4, image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500', sellerName: 'Student Seller', sellerEmail: 'student6@university.edu', isMine: true },
+      { id: '7', title: 'Anker Fast Type-C Charger 65W', description: 'Ultra-fast laptop and mobile wall adapter.', price: 1299, category: 'Electronics', status: 'available', stock: 14, image_url: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=500', sellerName: 'Student Seller', sellerEmail: 'student7@university.edu', isIncognito: false },
+      { id: '8', title: 'JBL Wireless Sports Earbuds', description: 'Sweatproof Bluetooth earphones for campus gym.', price: 1899, category: 'Electronics', status: 'available', stock: 7, image_url: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500', sellerName: 'Student Seller', sellerEmail: 'student8@university.edu', isIncognito: false },
+      { id: '9', title: 'Apple 20W USB-C Power Adapter', description: 'Original fast charger brick for iPhones.', price: 1499, category: 'Electronics', status: 'available', stock: 10, image_url: 'https://images.unsplash.com/photo-1622445268465-843d63d03713?w=500', sellerName: 'Student Seller', sellerEmail: 'student9@university.edu', isIncognito: false },
+      { id: '10', title: 'Boat Bassheads Wired Earphones', description: 'Tangle-free durable auxiliary wired headphones.', price: 399, category: 'Electronics', status: 'available', stock: 20, image_url: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=500', sellerName: 'Student Seller', sellerEmail: 'student10@university.edu', isIncognito: false },
+      { id: '11', title: 'Samsung 25W Super Fast Charger', description: 'Type-C to Type-C fast charging kit.', price: 999, category: 'Electronics', status: 'available', stock: 11, image_url: 'https://images.unsplash.com/photo-1585338107529-13afc5f02586?w=500', sellerName: 'Student Seller', sellerEmail: 'student11@university.edu', isIncognito: false },
+      { id: '12', title: 'Sennheiser Studio Monitor Headphones', description: 'Hi-Fi professional audio headphones.', price: 3499, category: 'Electronics', status: 'available', stock: 3, image_url: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=500', sellerName: 'Student Seller', sellerEmail: 'student12@university.edu', isIncognito: false },
+      { id: '13', title: 'Multi-Plug Surge Protector Extension', description: '4-Socket power board with dual USB ports.', price: 799, category: 'Electronics', status: 'available', stock: 16, image_url: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500', sellerName: 'Student Seller', sellerEmail: 'student13@university.edu', isIncognito: false },
+      { id: '14', title: 'Realme Buds Wireless Neckband', description: '17-Hour battery neckband wireless earphone.', price: 1199, category: 'Electronics', status: 'available', stock: 6, image_url: 'https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?w=500', sellerName: 'Student Seller', sellerEmail: 'student14@university.edu', isIncognito: false },
+      { id: '15', title: 'MagSafe Magnetic Wireless Charger', description: 'Qi Wireless charging pad for dorm desk.', price: 1599, category: 'Electronics', status: 'available', stock: 9, image_url: 'https://images.unsplash.com/photo-1617839625591-e5a789593135?w=500', sellerName: 'Student Seller', sellerEmail: 'student15@university.edu', isIncognito: false },
+      { id: '16', title: 'Chemistry Lab Coat & Safety Goggles', description: 'Standard cotton lab coat set.', price: 650, category: 'Lab Supplies', status: 'sold', stock: 0, image_url: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=500', sellerName: 'Student Seller', sellerEmail: 'student16@university.edu', isMine: true },
+      { id: '17', title: 'Ergonomic Study Desk Lamp', description: 'Warm LED lamp with touch controls.', price: 799, category: 'Essentials', status: 'available', stock: 12, image_url: 'https://images.unsplash.com/photo-1534353436294-0dbd4bdac845?w=500', sellerName: 'Student Seller', sellerEmail: 'student17@university.edu', isIncognito: false },
+      { id: '18', title: 'Casio FX-991EX Scientific Calculator', description: 'Non-programmable exam approved calculator.', price: 1250, category: 'Cheaper than your College', status: 'available', stock: 18, image_url: 'https://images.unsplash.com/photo-1611117775350-ac3950990985?w=500', sellerName: 'Student Seller', sellerEmail: 'student18@university.edu', isIncognito: false },
+      { id: '19', title: 'Insulated Thermal Water Bottle 1L', description: 'Keeps water cold for 24 hours.', price: 450, category: 'Essentials', status: 'available', stock: 25, image_url: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500', sellerName: 'Student Seller', sellerEmail: 'student19@university.edu', isIncognito: false },
+      { id: '20', title: 'Engineering Drafting Mini-Drafter', description: 'Precision graphics tool with carrying canvas bag.', price: 650, category: 'Others', status: 'available', stock: 8, image_url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=500', sellerName: 'Student Seller', sellerEmail: 'student20@university.edu', isIncognito: false },
     ];
 
     const incognitoListings = [
-      { id: 'inc-1', title: 'Secret Vape Pod Mod 5000', description: 'Discreet rechargeable flavor pod.', price: 1200, category: 'Incognito Special', image_url: 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?w=500', sellerName: 'Anonymous Seller', isIncognito: true },
-      { id: 'inc-2', title: 'Stealth Black Undergarments 3-Pack', description: 'Unmarked plain delivery box.', price: 899, category: 'Incognito Special', image_url: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=500', sellerName: 'Anonymous Seller', isIncognito: true }
+      { id: 'inc-1', title: 'Secret Vape Pod Mod 5000', description: 'Discreet rechargeable flavor pod.', price: 1200, category: 'Incognito Special', stock: 5, image_url: 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?w=500', sellerName: 'Anonymous Seller', isIncognito: true },
+      { id: 'inc-2', title: 'Stealth Black Undergarments 3-Pack', description: 'Unmarked plain delivery box.', price: 899, category: 'Incognito Special', stock: 10, image_url: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=500', sellerName: 'Anonymous Seller', isIncognito: true }
     ];
 
     function App() {
-      // Firebase Auth & User State
+      // Firebase Auth State
       const [currentUser, setCurrentUser] = useState(null);
       const [email, setEmail] = useState('');
       const [password, setPassword] = useState('');
       const [authMode, setAuthMode] = useState('login');
 
-      // Global Listings
+      // Shared Global Listings & Wishlist
       const [listings, setListings] = useState(initialListings);
       const [wishlist, setWishlist] = useState([]);
 
-      // Time & Live Weather
+      // Live Time & Weather Widget State
       const [time, setTime] = useState('');
       const [weather, setWeather] = useState(null);
+      const [showTimeHoverMsg, setShowTimeHoverMsg] = useState(false);
 
-      // UI Modes & Navigation
+      // UI Views & Modes
       const [darkMode, setDarkMode] = useState(true);
-      const [activePage, setActivePage] = useState('explore');
+      const [activePage, setActivePage] = useState('explore'); // 'explore' | 'escaped'
+      const [isSpectrumView, setIsSpectrumView] = useState(false); // 3D Library View
       const [showOrdersModal, setShowOrdersModal] = useState(false);
       const [showBuyConfirmModal, setShowBuyConfirmModal] = useState(false);
       const [selectedBuyItem, setSelectedBuyItem] = useState(null);
@@ -190,13 +220,15 @@
       const [formCategory, setFormCategory] = useState('Textbooks');
       const [formPrice, setFormPrice] = useState('');
       const [formDesc, setFormDesc] = useState('');
+      const [formStock, setFormStock] = useState('5');
       const [formImage, setFormImage] = useState('https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500');
       const [formIsIncognito, setFormIsIncognito] = useState(false);
       const [isGenerating, setIsGenerating] = useState(false);
 
-      // Celebration Animation State
+      // Celebration Animation & Shockwave State
       const [celebrationMsg, setCelebrationMsg] = useState('');
       const [isArrowFlying, setIsArrowFlying] = useState(false);
+      const [showShockwave, setShowShockwave] = useState(false);
 
       // Floating Profile Popover State
       const [showProfileHover, setShowProfileHover] = useState(false);
@@ -209,7 +241,7 @@
         if (window.lucide) window.lucide.createIcons();
       });
 
-      // Firebase Auth Listener & Persistent Login
+      // Firebase Auth Listener
       useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
           if (user) {
@@ -270,17 +302,26 @@
         setTimeout(() => setToastMessage(''), 3000);
       };
 
-      // Arrow Flying Animation (Circular Path targeting top banner)
-      const triggerArrowCelebration = (msg) => {
+      // Arrow Flying + Full Screen Explosion Shockwave Trigger
+      const triggerArrowExplosion = (msg) => {
         setIsArrowFlying(true);
         setTimeout(() => {
           setIsArrowFlying(false);
+          setShowShockwave(true);
           setCelebrationMsg(msg);
           if (window.confetti) {
-            window.confetti({ particleCount: 150, spread: 90, origin: { y: 0.5 } });
+            window.confetti({ particleCount: 200, spread: 120, origin: { y: 0.4 } });
           }
+          setTimeout(() => setShowShockwave(false), 800);
           setTimeout(() => setCelebrationMsg(''), 4500);
-        }, 4000);
+        }, 2400);
+      };
+
+      // Reset to Top / Start Page
+      const handleBrandClick = () => {
+        setActivePage('explore');
+        setIsIncognito(false);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       };
 
       // Firebase Authentication Logic
@@ -371,6 +412,7 @@
           price: parseFloat(formPrice),
           description: formDesc,
           status: 'available',
+          stock: parseInt(formStock) || 5,
           image_url: formImage,
           sellerName: currentUser?.email?.split('@')[0] || 'Student Seller',
           sellerEmail: currentUser?.email || 'student@university.edu',
@@ -388,21 +430,31 @@
         setFormTitle('');
         setFormPrice('');
         setFormDesc('');
-        triggerArrowCelebration(`Listing Published! You are already better than the college you study in! 🎓🚀`);
+        triggerArrowExplosion(`Listing Published! You are already better than the college you study in! 🎓🚀`);
       };
 
       // Toggle Sold Status
       const toggleStatus = (id) => {
         setListings(listings.map(item => item.id === id ? { ...item, status: item.status === 'available' ? 'sold' : 'available' } : item));
-        triggerArrowCelebration(`Item Status Updated! You are already better than the college you study in! 🎉`);
+        triggerArrowExplosion(`Item Status Updated! You are already better than the college you study in! 🎉`);
       };
 
-      // Confirm Buy Order
+      // Confirm Buy Order & Decrement Stock
       const confirmBuyOrder = () => {
         if (!selectedBuyItem) return;
-        setListings(listings.map(item => item.id === selectedBuyItem.id ? { ...item, status: 'sold' } : item));
+        setListings(listings.map(item => {
+          if (item.id === selectedBuyItem.id) {
+            const nextStock = Math.max(0, item.stock - 1);
+            return {
+              ...item,
+              stock: nextStock,
+              status: nextStock === 0 ? 'sold' : 'available'
+            };
+          }
+          return item;
+        }));
         setShowBuyConfirmModal(false);
-        triggerArrowCelebration(`Buy Order Finalized for "${selectedBuyItem.title}"! You are already better than the college you study in! 🛍️🎉`);
+        triggerArrowExplosion(`Buy Order Finalized for "${selectedBuyItem.title}"! You are already better than the college you study in! 🛍️🎉`);
       };
 
       // Click Outside Modal Close Handler
@@ -508,6 +560,9 @@
           {/* FLYING ARROW ANIMATION */}
           {isArrowFlying && <div className="arrow-flying-celebration">🏹</div>}
 
+          {/* EXPLOSION SHOCKWAVE EFFECT */}
+          {showShockwave && <div className="explosion-shockwave"></div>}
+
           {/* SINGLE-COLOR CLEAN CELEBRATION BANNER */}
           {celebrationMsg && (
             <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-indigo-600 text-white px-6 py-3 rounded-xl shadow-2xl font-bold text-center border border-indigo-400">
@@ -536,24 +591,37 @@
             </div>
           )}
 
-          {/* GLOBAL HEADER WITH LIVE TIME & WEATHER RESTORED */}
+          {/* GLOBAL HEADER WITH LIVE TIME, WEATHER & BRAND RESET */}
           <header className={`sticky top-0 z-30 border-b backdrop-blur ${isIncognito ? 'bg-zinc-950/90 border-rose-950' : darkMode ? 'bg-slate-900/90 border-slate-800' : 'bg-white/90 border-slate-200'}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
               
-              <div className="flex items-center gap-2 cursor-pointer" onClick={() => setActivePage('explore')}>
+              {/* BRAND LOGO - CLICK TO RESET TO START/EXPLORE PAGE */}
+              <div className="flex items-center gap-2 cursor-pointer" onClick={handleBrandClick} title="Return to Start/Explore Page">
                 <i data-lucide="zap" className="w-7 h-7 text-indigo-400"></i>
                 <span className="font-bold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
                   Escape the Matrix
                 </span>
               </div>
 
-              {/* LIVE TIME & WEATHER WIDGET RESTORED IN HEADER */}
+              {/* LIVE TIME (WITH HUMOROUS HOVER MSG) & WEATHER WIDGET */}
               <div className={`hidden md:flex items-center gap-4 px-3 py-1.5 rounded-full border text-xs font-medium ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-300' : 'bg-slate-100 border-slate-200 text-slate-700'}`}>
-                <div className="flex items-center gap-1.5 text-indigo-400">
+                <div 
+                  className="relative flex items-center gap-1.5 text-indigo-400 cursor-pointer"
+                  onMouseEnter={() => setShowTimeHoverMsg(true)}
+                  onMouseLeave={() => setShowTimeHoverMsg(false)}
+                >
                   <i data-lucide="clock" className="w-3.5 h-3.5"></i>
                   <span>{time || '00:00:00 AM'}</span>
+
+                  {showTimeHoverMsg && (
+                    <div className="absolute top-7 left-0 w-64 bg-slate-900 border border-slate-700 text-indigo-300 text-[10px] p-2 rounded-lg shadow-xl z-50">
+                      your time's bad anyways dont see this, keep shopping
+                    </div>
+                  )}
                 </div>
+
                 <div className={`h-3 w-px ${darkMode ? 'bg-slate-700' : 'bg-slate-300'}`}></div>
+
                 <div className="flex items-center gap-1.5 text-amber-400">
                   <i data-lucide="sun" className="w-3.5 h-3.5"></i>
                   <span>{weather ? `${weather.temp}°C, ${weather.condition}` : 'Loading weather...'}</span>
@@ -585,8 +653,17 @@
                 </button>
               </div>
 
-              {/* RIGHT CONTROLS: LIGHT/DARK TOGGLE & PROFILE DROPDOWN */}
-              <div className="flex items-center gap-3">
+              {/* RIGHT CONTROLS: 3D SPECTRUM TOGGLE, LIGHT/DARK TOGGLE & PROFILE HOVER */}
+              <div className="flex items-center gap-2">
+                {/* EXPERIMENTAL 3D SPECTRUM VIEW TOGGLE */}
+                <button
+                  onClick={() => setIsSpectrumView(!isSpectrumView)}
+                  className={`p-2 rounded-lg border transition ${isSpectrumView ? 'bg-indigo-600 text-white border-indigo-400' : darkMode ? 'border-slate-800 text-indigo-400 hover:bg-slate-800' : 'border-slate-200 text-indigo-600 hover:bg-slate-100'}`}
+                  title="Toggle Experimental 3D Spectrum/Library View"
+                >
+                  <i data-lucide="box" className="w-4 h-4"></i>
+                </button>
+
                 <button
                   onClick={() => setDarkMode(!darkMode)}
                   className={`p-2 rounded-lg border transition ${darkMode ? 'border-slate-800 text-amber-300 hover:bg-slate-800' : 'border-slate-200 text-slate-700 hover:bg-slate-100'}`}
@@ -698,79 +775,82 @@
               </select>
             </div>
 
-            {/* PRODUCT LISTINGS GRID */}
+            {/* PRODUCT LISTINGS GRID (WITH OPTIONAL 3D SPECTRUM VIEW PERSPECTIVE) */}
             {filteredListings.length === 0 ? (
               <div className={`text-center py-16 rounded-2xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
                 <p className="text-slate-500">No items found matching your search.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredListings.map((item) => {
-                  const isWishlisted = wishlist.includes(item.id);
-                  return (
-                    <div key={item.id} className={`image-card-container rounded-xl overflow-hidden border transition flex flex-col ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
-                      <div className="relative h-48 w-full bg-slate-800 overflow-hidden">
-                        <img src={item.image_url} alt={item.title} className="image-card-hover w-full h-full object-cover" />
-                        {item.status === 'sold' && (
-                          <div className="absolute inset-0 bg-black/75 flex items-center justify-center">
-                            <span className="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">SOLD</span>
-                          </div>
-                        )}
-                        <button
-                          onClick={() => toggleWishlist(item.id, item.title)}
-                          className="absolute top-2 right-2 p-2 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white transition z-10"
-                        >
-                          <i data-lucide="heart" className={`w-4 h-4 ${isWishlisted ? 'fill-rose-400 text-rose-400' : 'text-slate-300'}`}></i>
-                        </button>
-                      </div>
-
-                      <div className="p-5 flex-1 flex flex-col justify-between">
-                        <div>
-                          <div className="flex justify-between items-start mb-2">
-                            <h3 className="font-semibold">{item.title}</h3>
-                            <span className="font-bold text-indigo-400">₹{item.price}</span>
-                          </div>
-                          <p className="text-xs text-slate-400 line-clamp-2 mb-3">{item.description}</p>
-                          
-                          {/* SELLER DETAILS SHOWN IN EXPLORE */}
-                          <div className="text-[11px] text-indigo-300 mb-3 bg-indigo-950/40 p-2 rounded border border-indigo-900/40">
-                            👤 Seller: <span className="font-bold">{item.sellerName}</span> ({item.sellerEmail})
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between border-t border-slate-800 pt-3">
-                          <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-400">
-                            <i data-lucide="tag" className="w-3 h-3"></i>
-                            {item.category}
-                          </span>
-
-                          {/* ACTION BUTTONS */}
-                          {activePage === 'escaped' ? (
-                            <button
-                              onClick={() => toggleStatus(item.id)}
-                              className={`text-xs font-medium px-2.5 py-1 rounded transition flex items-center gap-1 ${
-                                item.status === 'available' ? 'text-amber-300 bg-amber-500/20' : 'text-emerald-300 bg-emerald-500/20'
-                              }`}
-                            >
-                              <i data-lucide="check-circle-2" className="w-3 h-3"></i>
-                              Mark {item.status === 'available' ? 'Sold' : 'Available'}
-                            </button>
-                          ) : (
-                            <button
-                              onClick={() => { setSelectedBuyItem(item); setShowBuyConfirmModal(true); }}
-                              disabled={item.status === 'sold'}
-                              className={`text-xs px-3 py-1 rounded-md font-medium transition ${
-                                item.status === 'sold' ? 'bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-500 text-white'
-                              }`}
-                            >
-                              {item.status === 'sold' ? 'Out of Stock' : 'Buy Now'}
-                            </button>
+              <div className={isSpectrumView ? "perspective-spectrum" : ""}>
+                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ${isSpectrumView ? "spectrum-grid" : ""}`}>
+                  {filteredListings.map((item) => {
+                    const isWishlisted = wishlist.includes(item.id);
+                    return (
+                      <div key={item.id} className={`image-card-container rounded-xl overflow-hidden border transition flex flex-col ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+                        <div className="relative h-48 w-full bg-slate-800 overflow-hidden">
+                          <img src={item.image_url} alt={item.title} className="image-card-hover w-full h-full object-cover" />
+                          {item.status === 'sold' && (
+                            <div className="absolute inset-0 bg-black/75 flex items-center justify-center">
+                              <span className="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">SOLD OUT</span>
+                            </div>
                           )}
+                          <button
+                            onClick={() => toggleWishlist(item.id, item.title)}
+                            className="absolute top-2 right-2 p-2 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white transition z-10"
+                          >
+                            <i data-lucide="heart" className={`w-4 h-4 ${isWishlisted ? 'fill-rose-400 text-rose-400' : 'text-slate-300'}`}></i>
+                          </button>
+                        </div>
+
+                        <div className="p-5 flex-1 flex flex-col justify-between">
+                          <div>
+                            <div className="flex justify-between items-start mb-2">
+                              <h3 className="font-semibold">{item.title}</h3>
+                              <span className="font-bold text-indigo-400">₹{item.price}</span>
+                            </div>
+                            <p className="text-xs text-slate-400 line-clamp-2 mb-3">{item.description}</p>
+                            
+                            {/* SELLER DETAILS & STOCK QUANTITY DISPLAYED */}
+                            <div className="flex justify-between items-center text-[11px] text-indigo-300 mb-3 bg-indigo-950/40 p-2 rounded border border-indigo-900/40">
+                              <span>👤 Seller: <span className="font-bold">{item.sellerName}</span></span>
+                              <span className="font-bold text-emerald-400">Stock: {item.stock} left</span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between border-t border-slate-800 pt-3">
+                            <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-400">
+                              <i data-lucide="tag" className="w-3 h-3"></i>
+                              {item.category}
+                            </span>
+
+                            {/* ACTION BUTTONS */}
+                            {activePage === 'escaped' ? (
+                              <button
+                                onClick={() => toggleStatus(item.id)}
+                                className={`text-xs font-medium px-2.5 py-1 rounded transition flex items-center gap-1 ${
+                                  item.status === 'available' ? 'text-amber-300 bg-amber-500/20' : 'text-emerald-300 bg-emerald-500/20'
+                                }`}
+                              >
+                                <i data-lucide="check-circle-2" className="w-3 h-3"></i>
+                                Mark {item.status === 'available' ? 'Sold' : 'Available'}
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => { setSelectedBuyItem(item); setShowBuyConfirmModal(true); }}
+                                disabled={item.status === 'sold' || item.stock === 0}
+                                className={`text-xs px-3 py-1 rounded-md font-medium transition ${
+                                  item.status === 'sold' || item.stock === 0 ? 'bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-500 text-white'
+                                }`}
+                              >
+                                {item.status === 'sold' || item.stock === 0 ? 'Out of Stock' : 'Buy Now'}
+                              </button>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             )}
           </main>
@@ -863,7 +943,6 @@
                 </div>
 
                 <form onSubmit={handleAddListing} className="space-y-4">
-                  {/* GENERAL VS INCOGNITO TOGGLE SWITCH */}
                   <div className="bg-slate-800 p-1.5 rounded-xl flex items-center justify-between text-xs">
                     <span className="font-semibold text-slate-300">Listing Mode:</span>
                     <div className="flex gap-1">
@@ -896,7 +975,7 @@
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-3 gap-3">
                     <div>
                       <label className="block text-xs font-medium mb-1">Category</label>
                       <select
@@ -920,6 +999,17 @@
                         placeholder="499"
                         value={formPrice}
                         onChange={(e) => setFormPrice(e.target.value)}
+                        className="w-full bg-slate-800 border border-slate-700 rounded px-3 py-1.5 text-sm outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium mb-1">Stock Qty</label>
+                      <input
+                        type="number"
+                        required
+                        placeholder="5"
+                        value={formStock}
+                        onChange={(e) => setFormStock(e.target.value)}
                         className="w-full bg-slate-800 border border-slate-700 rounded px-3 py-1.5 text-sm outline-none"
                       />
                     </div>
