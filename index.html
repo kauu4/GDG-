@@ -28,23 +28,22 @@
       cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><g transform='scale(-1, 1) translate(-24, 0)'><text y='18' font-size='18'>🏹</text></g></svg>") 0 0, auto !important;
     }
 
-    /* Arrow Shooting Animation towards Pop-up */
+    /* Circular Smooth Arrow Flying Animation Targetting Top Banner */
     .arrow-flying-celebration {
       position: fixed;
       z-index: 9999;
-      font-size: 28px;
+      font-size: 24px;
       pointer-events: none;
-      animation: flyAround 7s ease-in-out forwards;
+      animation: circularFlyToPop 4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     }
 
-    @keyframes flyAround {
-      0% { top: 80%; left: 50%; transform: rotate(0deg) scale(1); }
-      20% { top: 20%; left: 80%; transform: rotate(45deg) scale(1.2); }
-      40% { top: 70%; left: 10%; transform: rotate(-90deg) scale(1.1); }
-      60% { top: 30%; left: 30%; transform: rotate(180deg) scale(1.3); }
-      80% { top: 60%; left: 70%; transform: rotate(90deg) scale(1.2); }
-      90% { top: 40%; left: 50%; transform: rotate(0deg) scale(1.5); }
-      100% { top: 20%; left: 50%; transform: scale(2) rotate(360deg); opacity: 0; }
+    @keyframes circularFlyToPop {
+      0% { top: 70%; left: 50%; transform: rotate(0deg) scale(1); opacity: 1; }
+      25% { top: 50%; left: 75%; transform: rotate(90deg) scale(0.9); opacity: 1; }
+      50% { top: 30%; left: 50%; transform: rotate(180deg) scale(0.8); opacity: 1; }
+      75% { top: 50%; left: 25%; transform: rotate(270deg) scale(0.7); opacity: 1; }
+      90% { top: 18%; left: 50%; transform: rotate(360deg) scale(0.6); opacity: 1; }
+      100% { top: 12%; left: 50%; transform: rotate(360deg) scale(0.2); opacity: 0; }
     }
 
     /* Image Hover Outline Effect */
@@ -66,7 +65,6 @@
 
   <!-- FIREBASE INITIALIZATION SCRIPT -->
   <script>
-    // Replace with your actual Firebase Web Config details from Firebase Console
     const firebaseConfig = {
         apiKey: "AIzaSyAJwzQOqGYYV1YKgfvyuknrzrCOrI6OXYc",
   authDomain: "escape-the-matrix-76050.firebaseapp.com",
@@ -77,7 +75,6 @@
   measurementId: "G-4884XYRRF3"
     };
     
-    // Initialize Firebase
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
@@ -91,7 +88,7 @@
     const GEMINI_API_KEY = ""; 
     const WEATHER_API_KEY = ""; 
 
-    // Quantity-Based SVG Bar Chart Component
+    // Quantity-Based Fast SVG Bar Chart Component
     function QuantityBarChart({ data, dataKey, color }) {
       const maxValue = Math.max(...data.map(d => d[dataKey]));
       return (
@@ -125,11 +122,28 @@
       { name: 'Graphing Calc', sellQty: 72, buyQty: 95 }
     ];
 
+    // Restored 20 Sample Products
     const initialListings = [
-      { id: '1', title: 'Escape the Matrix', description: 'Ultimate campus survival & productivity guide book.', price: 499, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500', sellerName: 'Kaustav (Core Member)', sellerEmail: 'kaustav@university.edu', isIncognito: false },
-      { id: '2', title: 'Data Structures & Algorithms', description: 'Core CS concepts textbook with C/C++ examples.', price: 550, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=500', sellerName: 'Senior Student', sellerEmail: 'senior@university.edu', isIncognito: false },
-      { id: '3', title: 'Sony Over-Ear Headphones', description: 'Noise-canceling deep bass study headphones.', price: 2499, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500', sellerName: 'Alex CS', sellerEmail: 'alex@university.edu', isIncognito: false },
-      { id: '4', title: 'Casio FX-991EX Scientific Calculator', description: 'Exam approved non-programmable calculator.', price: 1250, category: 'Cheaper than your College', status: 'available', image_url: 'https://images.unsplash.com/photo-1611117775350-ac3950990985?w=500', sellerName: 'Rahul (COSMOS)', sellerEmail: 'rahul@university.edu', isIncognito: false },
+      { id: '1', title: 'Escape the Matrix', description: 'Ultimate campus survival & productivity guide book.', price: 499, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500', sellerName: 'Student Seller', sellerEmail: 'student1@university.edu', isIncognito: false },
+      { id: '2', title: 'Data Structures & Algorithms', description: 'Core CS concepts textbook with C/C++ examples.', price: 550, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=500', sellerName: 'Student Seller', sellerEmail: 'student2@university.edu', isIncognito: false },
+      { id: '3', title: 'Physics for Engineers Vol 1', description: 'Standard reference book for engineering physics.', price: 420, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=500', sellerName: 'Student Seller', sellerEmail: 'student3@university.edu', isIncognito: false },
+      { id: '4', title: 'Organic Chemistry Handbook', description: 'Complete reaction mechanism study guide.', price: 600, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=500', sellerName: 'Student Seller', sellerEmail: 'student4@university.edu', isIncognito: false },
+      { id: '5', title: 'Digital Electronics Systems', description: 'Logic gates and microprocessors manual.', price: 480, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=500', sellerName: 'Student Seller', sellerEmail: 'student5@university.edu', isIncognito: false },
+      { id: '6', title: 'Sony Over-Ear Studio Headphones', description: 'Noise-canceling deep bass study headphones.', price: 2499, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500', sellerName: 'Student Seller', sellerEmail: 'student6@university.edu', isMine: true },
+      { id: '7', title: 'Anker Fast Type-C Charger 65W', description: 'Ultra-fast laptop and mobile wall adapter.', price: 1299, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=500', sellerName: 'Student Seller', sellerEmail: 'student7@university.edu', isIncognito: false },
+      { id: '8', title: 'JBL Wireless Sports Earbuds', description: 'Sweatproof Bluetooth earphones for campus gym.', price: 1899, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500', sellerName: 'Student Seller', sellerEmail: 'student8@university.edu', isIncognito: false },
+      { id: '9', title: 'Apple 20W USB-C Power Adapter', description: 'Original fast charger brick for iPhones.', price: 1499, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1622445268465-843d63d03713?w=500', sellerName: 'Student Seller', sellerEmail: 'student9@university.edu', isIncognito: false },
+      { id: '10', title: 'Boat Bassheads Wired Earphones', description: 'Tangle-free durable auxiliary wired headphones.', price: 399, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=500', sellerName: 'Student Seller', sellerEmail: 'student10@university.edu', isIncognito: false },
+      { id: '11', title: 'Samsung 25W Super Fast Charger', description: 'Type-C to Type-C fast charging kit.', price: 999, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1585338107529-13afc5f02586?w=500', sellerName: 'Student Seller', sellerEmail: 'student11@university.edu', isIncognito: false },
+      { id: '12', title: 'Sennheiser Studio Monitor Headphones', description: 'Hi-Fi professional audio headphones.', price: 3499, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=500', sellerName: 'Student Seller', sellerEmail: 'student12@university.edu', isIncognito: false },
+      { id: '13', title: 'Multi-Plug Surge Protector Extension', description: '4-Socket power board with dual USB ports.', price: 799, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500', sellerName: 'Student Seller', sellerEmail: 'student13@university.edu', isIncognito: false },
+      { id: '14', title: 'Realme Buds Wireless Neckband', description: '17-Hour battery neckband wireless earphone.', price: 1199, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?w=500', sellerName: 'Student Seller', sellerEmail: 'student14@university.edu', isIncognito: false },
+      { id: '15', title: 'MagSafe Magnetic Wireless Charger', description: 'Qi Wireless charging pad for dorm desk.', price: 1599, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1617839625591-e5a789593135?w=500', sellerName: 'Student Seller', sellerEmail: 'student15@university.edu', isIncognito: false },
+      { id: '16', title: 'Chemistry Lab Coat & Safety Goggles', description: 'Standard cotton lab coat set.', price: 650, category: 'Lab Supplies', status: 'sold', image_url: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=500', sellerName: 'Student Seller', sellerEmail: 'student16@university.edu', isMine: true },
+      { id: '17', title: 'Ergonomic Study Desk Lamp', description: 'Warm LED lamp with touch controls.', price: 799, category: 'Essentials', status: 'available', image_url: 'https://images.unsplash.com/photo-1534353436294-0dbd4bdac845?w=500', sellerName: 'Student Seller', sellerEmail: 'student17@university.edu', isIncognito: false },
+      { id: '18', title: 'Casio FX-991EX Scientific Calculator', description: 'Non-programmable exam approved calculator.', price: 1250, category: 'Cheaper than your College', status: 'available', image_url: 'https://images.unsplash.com/photo-1611117775350-ac3950990985?w=500', sellerName: 'Student Seller', sellerEmail: 'student18@university.edu', isIncognito: false },
+      { id: '19', title: 'Insulated Thermal Water Bottle 1L', description: 'Keeps water cold for 24 hours.', price: 450, category: 'Essentials', status: 'available', image_url: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500', sellerName: 'Student Seller', sellerEmail: 'student19@university.edu', isIncognito: false },
+      { id: '20', title: 'Engineering Drafting Mini-Drafter', description: 'Precision graphics tool with carrying canvas bag.', price: 650, category: 'Others', status: 'available', image_url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=500', sellerName: 'Student Seller', sellerEmail: 'student20@university.edu', isIncognito: false },
     ];
 
     const incognitoListings = [
@@ -142,15 +156,19 @@
       const [currentUser, setCurrentUser] = useState(null);
       const [email, setEmail] = useState('');
       const [password, setPassword] = useState('');
-      const [authMode, setAuthMode] = useState('login'); // 'login' | 'reset'
+      const [authMode, setAuthMode] = useState('login');
 
-      // Global Shared Database Listings State
+      // Global Listings
       const [listings, setListings] = useState(initialListings);
       const [wishlist, setWishlist] = useState([]);
 
+      // Time & Live Weather
+      const [time, setTime] = useState('');
+      const [weather, setWeather] = useState(null);
+
       // UI Modes & Navigation
       const [darkMode, setDarkMode] = useState(true);
-      const [activePage, setActivePage] = useState('explore'); // 'explore' | 'escaped'
+      const [activePage, setActivePage] = useState('explore');
       const [showOrdersModal, setShowOrdersModal] = useState(false);
       const [showBuyConfirmModal, setShowBuyConfirmModal] = useState(false);
       const [selectedBuyItem, setSelectedBuyItem] = useState(null);
@@ -191,7 +209,7 @@
         if (window.lucide) window.lucide.createIcons();
       });
 
-      // Firebase Auth Listener (Persistent Login Check)
+      // Firebase Auth Listener & Persistent Login
       useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
           if (user) {
@@ -202,6 +220,32 @@
           }
         });
         return () => unsubscribe();
+      }, []);
+
+      // Live Clock & Weather Fetch
+      useEffect(() => {
+        const updateTime = () => setTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+        updateTime();
+        const timer = setInterval(updateTime, 1000);
+
+        const fetchWeather = async () => {
+          try {
+            if (!WEATHER_API_KEY) {
+              setWeather({ temp: 24, condition: 'Sunny' });
+              return;
+            }
+            const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Bengaluru&units=metric&appid=${WEATHER_API_KEY}`);
+            const data = await res.json();
+            if (data.main) {
+              setWeather({ temp: Math.round(data.main.temp), condition: data.weather[0].main });
+            }
+          } catch {
+            setWeather({ temp: 24, condition: 'Sunny' });
+          }
+        };
+
+        fetchWeather();
+        return () => clearInterval(timer);
       }, []);
 
       // 1-Minute Junior Uniform Timer
@@ -226,7 +270,7 @@
         setTimeout(() => setToastMessage(''), 3000);
       };
 
-      // Arrow Flying Animation (7 Seconds) & Party Confetti Burst
+      // Arrow Flying Animation (Circular Path targeting top banner)
       const triggerArrowCelebration = (msg) => {
         setIsArrowFlying(true);
         setTimeout(() => {
@@ -236,7 +280,7 @@
             window.confetti({ particleCount: 150, spread: 90, origin: { y: 0.5 } });
           }
           setTimeout(() => setCelebrationMsg(''), 4500);
-        }, 7000);
+        }, 4000);
       };
 
       // Firebase Authentication Logic
@@ -250,7 +294,6 @@
             return;
           }
 
-          // Try signing in; if user doesn't exist, register them
           try {
             await auth.signInWithEmailAndPassword(email, password);
             triggerToast('Welcome back to Escape the Matrix!');
@@ -318,7 +361,7 @@
         }
       };
 
-      // Add New Product (Visible to All Users)
+      // Add New Product
       const handleAddListing = (e) => {
         e.preventDefault();
         const newListing = {
@@ -465,10 +508,10 @@
           {/* FLYING ARROW ANIMATION */}
           {isArrowFlying && <div className="arrow-flying-celebration">🏹</div>}
 
-          {/* PARTY CELEBRATION POPUP */}
+          {/* SINGLE-COLOR CLEAN CELEBRATION BANNER */}
           {celebrationMsg && (
-            <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-r from-emerald-500 via-indigo-600 to-amber-500 text-white px-6 py-3 rounded-2xl shadow-2xl font-bold text-center animate-bounce border-2 border-white">
-              🎉 Congratulations! {celebrationMsg}
+            <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-indigo-600 text-white px-6 py-3 rounded-xl shadow-2xl font-bold text-center border border-indigo-400">
+              🎉 {celebrationMsg}
             </div>
           )}
 
@@ -493,7 +536,7 @@
             </div>
           )}
 
-          {/* GLOBAL HEADER */}
+          {/* GLOBAL HEADER WITH LIVE TIME & WEATHER RESTORED */}
           <header className={`sticky top-0 z-30 border-b backdrop-blur ${isIncognito ? 'bg-zinc-950/90 border-rose-950' : darkMode ? 'bg-slate-900/90 border-slate-800' : 'bg-white/90 border-slate-200'}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
               
@@ -504,7 +547,20 @@
                 </span>
               </div>
 
-              {/* 3 DISTINCT UN-REPEATED NAVIGATION OPTIONS */}
+              {/* LIVE TIME & WEATHER WIDGET RESTORED IN HEADER */}
+              <div className={`hidden md:flex items-center gap-4 px-3 py-1.5 rounded-full border text-xs font-medium ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-300' : 'bg-slate-100 border-slate-200 text-slate-700'}`}>
+                <div className="flex items-center gap-1.5 text-indigo-400">
+                  <i data-lucide="clock" className="w-3.5 h-3.5"></i>
+                  <span>{time || '00:00:00 AM'}</span>
+                </div>
+                <div className={`h-3 w-px ${darkMode ? 'bg-slate-700' : 'bg-slate-300'}`}></div>
+                <div className="flex items-center gap-1.5 text-amber-400">
+                  <i data-lucide="sun" className="w-3.5 h-3.5"></i>
+                  <span>{weather ? `${weather.temp}°C, ${weather.condition}` : 'Loading weather...'}</span>
+                </div>
+              </div>
+
+              {/* 3 DISTINCT NAVIGATION OPTIONS */}
               <div className="flex items-center gap-1 sm:gap-2 bg-slate-800/80 p-1 rounded-full border border-slate-700 text-xs">
                 <button
                   onClick={() => setActivePage('explore')}
@@ -529,7 +585,7 @@
                 </button>
               </div>
 
-              {/* RIGHT CONTROLS: THEME TOGGLE & FLOATING PROFILE HOVER */}
+              {/* RIGHT CONTROLS: LIGHT/DARK TOGGLE & PROFILE DROPDOWN */}
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setDarkMode(!darkMode)}
@@ -921,7 +977,7 @@
             </div>
           )}
 
-          {/* INCOGNITO STEALTH MODE TOGGLE (BOTTOM RIGHT CORNER) */}
+          {/* INCOGNITO STEALTH MODE TOGGLE */}
           <div className="fixed bottom-4 right-4 z-40">
             <button
               onClick={() => {
