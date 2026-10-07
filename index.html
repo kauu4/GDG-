@@ -68,7 +68,7 @@
   <script>
     // Replace with your actual Firebase Web Config details from Firebase Console
     const firebaseConfig = {
-  apiKey: "AIzaSyAJwzQOqGYYV1YKgfvyuknrzrCOrI6OXYc",
+        apiKey: "AIzaSyAJwzQOqGYYV1YKgfvyuknrzrCOrI6OXYc",
   authDomain: "escape-the-matrix-76050.firebaseapp.com",
   projectId: "escape-the-matrix-76050",
   storageBucket: "escape-the-matrix-76050.firebasestorage.app",
@@ -897,4 +897,52 @@
                       required
                       value={formDesc}
                       onChange={(e) => setFormDesc(e.target.value)}
-                      className
+                      className="w-full bg-slate-800 border border-slate-700 rounded p-2 text-sm outline-none"
+                    ></textarea>
+                  </div>
+
+                  <div className="flex justify-end gap-2 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowSellModal(false)}
+                      className="px-4 py-1.5 text-sm text-slate-400 hover:bg-slate-800 rounded"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-4 py-1.5 text-sm bg-emerald-600 hover:bg-emerald-500 text-white rounded font-medium"
+                    >
+                      Publish Listing
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* INCOGNITO STEALTH MODE TOGGLE (BOTTOM RIGHT CORNER) */}
+          <div className="fixed bottom-4 right-4 z-40">
+            <button
+              onClick={() => {
+                setIsIncognito(!isIncognito);
+                triggerToast(isIncognito ? 'Exited Incognito Mode' : '🕵️‍♂️ Incognito Secret Mode Enabled!');
+              }}
+              className={`px-3 py-2 rounded-full text-xs font-bold border shadow-2xl flex items-center gap-2 transition ${
+                isIncognito ? 'bg-rose-950 border-rose-700 text-rose-300' : 'bg-slate-900 border-slate-700 text-slate-300 hover:bg-slate-800'
+              }`}
+            >
+              <i data-lucide="eye-off" className="w-4 h-4 text-rose-400"></i>
+              <span>{isIncognito ? 'Exit Incognito Mode' : 'Incognito Mode 🕵️‍♂️'}</span>
+            </button>
+          </div>
+
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
