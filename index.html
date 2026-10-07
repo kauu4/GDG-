@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Escape the Matrix | Campus Marketplace</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React & ReactDOM -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <!-- Babel Compiler for JSX -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Fast Standard SVG Charts -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    /* Realistic Ink Fountain Pen Static Cursor */
+    body, button, input, select, textarea, a, div {
+      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none'><path d='M12 19l7-7 3 3-7 7-3-3z' fill='%236366f1'/><path d='M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z' fill='%234f46e5' stroke='%23312e81' stroke-width='1'/><path d='M2 2l5 5' stroke='%23fbbf24' stroke-width='1.5'/><circle cx='2' cy='2' r='1' fill='%23000000'/></svg>") 2 2, auto !important;
+    }
+
+    /* Animated Border Light Running Glow Effect on Hover */
+    @keyframes borderGlow {
+      0% { border-color: #6366f1; box-shadow: 0 0 8px rgba(99, 102, 241, 0.6); }
+      50% { border-color: #06b6d4; box-shadow: 0 0 16px rgba(6, 182, 212, 0.8); }
+      100% { border-color: #6366f1; box-shadow: 0 0 8px rgba(99, 102, 241, 0.6); }
+    }
+
+    .image-card-hover {
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .image-card-container:hover .image-card-hover {
+      transform: scale(1.08);
+    }
+    .image-card-container:hover {
+      animation: borderGlow 2s infinite linear;
+      border-radius: 0.75rem;
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    const GEMINI_API_KEY = ""; 
+    const WEATHER_API_KEY = ""; 
+
+    // Fast Native SVG Bar Chart Component for Zero-Lag Loading
+    function FastBarChart({ data, dataKey, color }) {
+      const maxValue = Math.max(...data.map(d => d[dataKey]));
+      return (
+        <div className="w-full h-44 flex items-end justify-between gap-3 pt-6 pb-2 px-2">
+          {data.map((item, idx) => {
+            const heightPct = Math.round((item[dataKey] / maxValue) * 100);
+            return (
+              <div key={idx} className="flex-1 flex flex-col items-center h-full justify-end group relative">
+                <div className="text-[10px] text-slate-400 mb-1 opacity-0 group-hover:opacity-100 transition">
+                  ₹{item[dataKey]}
+                </div>
+                <div 
+                  style={{ height: `${heightPct}%`, backgroundColor: color }}
+                  className="w-full rounded-t-md transition-all duration-500 hover:brightness-125"
+                ></div>
+                <span className="text-[10px] text-slate-400 mt-2 truncate w-full text-center">
+                  {item.name}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+
+    const analyticsData = [
+      { name: 'Escape Matrix', sellVolume: 185, buyDemand: 210 },
+      { name: 'Headphones', sellVolume: 120, buyDemand: 150 },
+      { name: 'Lab Coat', sellVolume: 98, buyDemand: 130 },
+      { name: 'Desk Lamp', sellVolume: 86, buyDemand: 110 },
+      { name: 'Graphing Calc', sellVolume: 72, buyDemand: 95 }
+    ];
+
+    const initialListings = [
+      { id: '1', title: 'Escape the Matrix', description: 'Ultimate campus survival & productivity guide book.', price: 499, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500', isMine: false },
+      { id: '2', title: 'Studio Headphones', description: 'Noise-canceling campus studio headphones.', price: 2499, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500', isMine: true },
+      { id: '3', title: 'Chemistry Lab Kit', description: 'Lab coat and safety goggles combo set.', price: 650, category: 'Lab Supplies', status: 'sold', image_url: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=500', isMine: true },
+      { id: '4', title: 'Desk Organizer', description: 'Ergonomic metal desk organizer holder.', price: 350, category: 'Essentials', status: 'available', image_url: 'https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?w=500', isMine: false },
+      { id: '5', title: 'Scientific Calculator', description: 'Advanced scientific graphing calculator.', price: 1800, category: 'Cheaper than your College', status: 'available', image_url: 'https://images.unsplash.com/photo-1611117775350-ac3950990985?w=500', isMine: false },
+      { id: '6', title: 'Drawing Board', description: 'Engineering Graphics drawing board set.', price: 850, category: 'Others', status: 'available', image_url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=500', isMine: false },
+    ];
+
+    function App() {
+      // Auth State
+      const [isAuthenticated, setIsAuthenticated] = useState(false);
+      const [username, setUsername] = useState('');
+      const [password, setPassword] = useState('');
+
+      // World Mode Toggle: "In Matrix" (Buyer View) vs "Escaped Matrix" (Seller View)
+      const [matrixWorld, setMatrixWorld] = useState('in'); // 'in' or 'escaped'
+
+      // UI State
+      const [darkMode, setDarkMode] = useState(true);
+      const [activeTab, setActiveTab] = useState('explore');
+      const [listings, setListings] = useState(initialListings);
+      const [searchQuery, setSearchQuery] = useState('');
+      const [selectedCategory, setSelectedCategory] = useState('All');
+      
+      // Wishlist State
+      const [wishlist, setWishlist] = useState([]);
+      const [wishlistName, setWishlistName] = useState('My Matrix Wishlist');
+      const [toastMessage, setToastMessage] = useState('');
+
+      // Header Banner Popup
+      const [showHumorBanner, setShowHumorBanner] = useState(true);
+
+      // Time & Weather
+      const [time, setTime] = useState('');
+      const [weather, setWeather] = useState(null);
+
+      // Create Modal State
+      const [showModal, setShowModal] = useState(false);
+      const [formTitle, setFormTitle] = useState('');
+      const [formCategory, setFormCategory] = useState('Textbooks');
+      const [formPrice, setFormPrice] = useState('');
+      const [formDesc, setFormDesc] = useState('');
+      const [formImage, setFormImage] = useState('https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500');
+      const [isGenerating, setIsGenerating] = useState(false);
+
+      // Ref for backdrop click closing modal
+      const modalRef = useRef();
+
+      useEffect(() => {
+        if (window.lucide) window.lucide.createIcons();
+      });
+
+      // Clock & Weather
+      useEffect(() => {
+        const updateTime = () => setTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+        updateTime();
+        const timer = setInterval(updateTime, 1000);
+
+        const fetchWeather = async () => {
+          try {
+            if (!WEATHER_API_KEY) {
+              setWeather({ temp: 24, condition: 'Sunny' });
+              return;
+            }
+            const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Bengaluru&units=metric&appid=${WEATHER_API_KEY}`);
+            const data = await res.json();
+            if (data.main) {
+              setWeather({ temp: Math.round(data.main.temp), condition: data.weather[0].main });
+            }
+          } catch {
+            setWeather({ temp: 24, condition: 'Sunny' });
+          }
+        };
+
+        fetchWeather();
+        return () => clearInterval(timer);
+      }, []);
+
+      const triggerToast = (msg) => {
+        setToastMessage(msg);
+        setTimeout(() => setToastMessage(''), 3000);
+      };
+
+      const toggleWishlist = (id, title) => {
+        if (wishlist.includes(id)) {
+          setWishlist(wishlist.filter(item => item !== id));
+          triggerToast(`Removed "${title}"`);
+        } else {
+          setWishlist([...wishlist, id]);
+          triggerToast(`❤️ Added "${title}" to ${wishlistName}!`);
+        }
+      };
+
+      const handleLogin = (e) => {
+        e.preventDefault();
+        if (username && password) {
+          setIsAuthenticated(true);
+          triggerToast(`Logged in as ${username}`);
+        }
+      };
+
+      // Handle Image File Upload (JPG/PNG)
+      const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            setFormImage(reader.result);
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+
+      const handleGenerateAI = async () => {
+        if (!formTitle) return alert('Please enter a product title first!');
+        setIsGenerating(true);
+        try {
+          if (!GEMINI_API_KEY) {
+            setTimeout(() => {
+              setFormDesc(`Pristine condition ${formTitle} under ${formCategory}. Escape the matrix and grab this campus essential!`);
+              setIsGenerating(false);
+            }, 600);
+            return;
+          }
+
+          const prompt = `Write a compelling, concise 3-sentence marketplace description for a college student selling "${formTitle}" in category "${formCategory}".`;
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+          });
+          const data = await res.json();
+          setFormDesc(data?.candidates?.[0]?.content?.parts?.[0]?.text || `High quality ${formTitle} for students!`);
+        } catch {
+          alert('Failed to generate description.');
+        } finally {
+          setIsGenerating(false);
+        }
+      };
+
+      const handleAddListing = (e) => {
+        e.preventDefault();
+        const newListing = {
+          id: Date.now().toString(),
+          title: formTitle,
+          category: formCategory,
+          price: parseFloat(formPrice),
+          description: formDesc,
+          status: 'available',
+          image_url: formImage,
+          isMine: true
+        };
+        setListings([newListing, ...listings]);
+        setShowModal(false);
+        setFormTitle('');
+        setFormPrice('');
+        setFormDesc('');
+        triggerToast(`Listed "${formTitle}" for sale!`);
+      };
+
+      const toggleStatus = (id) => {
+        setListings(listings.map(item => item.id === id ? { ...item, status: item.status === 'available' ? 'sold' : 'available' } : item));
+      };
+
+      // Close modal on click outside
+      const handleBackdropClick = (e) => {
+        if (modalRef.current && e.target === modalRef.current) {
+          setShowModal(false);
+        }
+      };
+
+      const myProducts = listings.filter(item => item.isMine);
+      const soldItems = myProducts.filter(item => item.status === 'sold');
+      const totalEarned = soldItems.reduce((sum, item) => sum + item.price, 0);
+
+      const filteredListings = listings.filter(item => {
+        const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) || item.description.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory;
+        const matchesWishlist = activeTab === 'wishlist' ? wishlist.includes(item.id) : true;
+        const matchesSellerMode = matrixWorld === 'escaped' ? item.isMine : true;
+        return matchesSearch && matchesCategory && matchesWishlist && matchesSellerMode;
+      });
+
+      // PAGE 1: LOGIN GATE
+      if (!isAuthenticated) {
+        return (
+          <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-4">
+            <div className="bg-slate-900 border border-slate-800 p-8 rounded-2xl max-w-md w-full shadow-2xl">
+              <div className="text-center mb-8">
+                <div className="inline-flex p-3 bg-indigo-600/20 text-indigo-400 rounded-2xl mb-3">
+                  <i data-lucide="zap" className="w-8 h-8"></i>
+                </div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+                  Escape the Matrix
+                </h1>
+                <p className="text-slate-400 text-xs mt-1">Campus Marketplace Login</p>
+              </div>
+
+              <form onSubmit={handleLogin} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-medium text-slate-300 mb-1">Username / Email</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="student@university.edu"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-indigo-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-slate-300 mb-1">Password</label>
+                  <input
+                    type="password"
+                    required
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-indigo-500"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 font-semibold rounded-lg text-sm text-white transition shadow-lg shadow-indigo-600/30"
+                >
+                  Enter Marketplace
+                </button>
+              </form>
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div className={`min-h-screen flex flex-col ${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
+          
+          {/* HUMOROUS POPUP BANNER AT TOP */}
+          {showHumorBanner && (
+            <div className="bg-gradient-to-r from-amber-500 via-indigo-600 to-rose-500 text-white text-xs py-2 px-4 flex items-center justify-between font-medium shadow-md">
+              <div className="flex items-center gap-2 mx-auto">
+                <i data-lucide="sparkles" className="w-4 h-4 animate-spin"></i>
+                <span>"Don't put all your faith in campus placements—start hustling early, or just sit back and admire all the stuff you bought but never use!"</span>
+              </div>
+              <button onClick={() => setShowHumorBanner(false)} className="hover:opacity-80">
+                <i data-lucide="x" className="w-4 h-4"></i>
+              </button>
+            </div>
+          )}
+
+          {/* TOAST POPUP */}
+          {toastMessage && (
+            <div className="fixed bottom-5 right-5 z-50 bg-indigo-600 text-white px-4 py-2.5 rounded-xl shadow-2xl text-sm font-medium flex items-center gap-2">
+              <i data-lucide="bell" className="w-4 h-4"></i>
+              <span>{toastMessage}</span>
+            </div>
+          )}
+
+          {/* GLOBAL HEADER */}
+          <header className={`sticky top-0 z-40 border-b ${darkMode ? 'bg-slate-900/90 border-slate-800' : 'bg-white/90 border-slate-200'} backdrop-blur`}>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+              
+              <div className="flex items-center gap-2 cursor-pointer" onClick={() => setActiveTab('explore')}>
+                <i data-lucide="zap" className="w-7 h-7 text-indigo-400"></i>
+                <span className="font-bold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+                  Escape the Matrix
+                </span>
+              </div>
+
+              {/* WORLD TOGGLE SWITCH: IN MATRIX vs ESCAPED (SELLER MODE) */}
+              <div className="flex items-center bg-slate-800/90 p-1 rounded-full border border-slate-700">
+                <button
+                  onClick={() => { setMatrixWorld('in'); setActiveTab('explore'); }}
+                  className={`px-3 py-1 rounded-full text-xs font-semibold transition ${matrixWorld === 'in' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-white'}`}
+                >
+                  In Matrix (Buyer)
+                </button>
+                <button
+                  onClick={() => { setMatrixWorld('escaped'); setActiveTab('myproducts'); }}
+                  className={`px-3 py-1 rounded-full text-xs font-semibold transition ${matrixWorld === 'escaped' ? 'bg-emerald-600 text-white shadow' : 'text-slate-400 hover:text-white'}`}
+                >
+                  Escaped (Seller)
+                </button>
+              </div>
+
+              {/* CLOCK & WEATHER */}
+              <div className={`hidden lg:flex items-center gap-4 px-3 py-1 rounded-full border text-xs ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-slate-100 border-slate-200'}`}>
+                <span className="text-indigo-400 font-medium">{time}</span>
+                <span className="text-amber-400 font-medium">{weather ? `${weather.temp}°C, ${weather.condition}` : ''}</span>
+              </div>
+
+              {/* ACTIONS */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setDarkMode(!darkMode)}
+                  className={`p-2 rounded-lg border ${darkMode ? 'border-slate-800 text-amber-300' : 'border-slate-200 text-slate-700'}`}
+                >
+                  <i data-lucide={darkMode ? 'sun' : 'moon'} className="w-4 h-4"></i>
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('explore')}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium ${activeTab === 'explore' ? 'bg-indigo-600 text-white' : 'hover:bg-slate-800'}`}
+                >
+                  Explore
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('myproducts')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium ${activeTab === 'myproducts' ? 'bg-indigo-600 text-white' : 'hover:bg-slate-800'}`}
+                >
+                  <i data-lucide="package" className="w-4 h-4 text-emerald-400"></i>
+                  <span className="hidden sm:inline">My Products</span>
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('wishlist')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium ${activeTab === 'wishlist' ? 'bg-indigo-600 text-white' : 'hover:bg-slate-800'}`}
+                >
+                  <i data-lucide="heart" className="w-4 h-4 text-rose-400"></i>
+                  <span className="hidden sm:inline">Wishlist ({wishlist.length})</span>
+                </button>
+              </div>
+            </div>
+          </header>
+
+          {/* MAIN CONTAINER */}
+          {activeTab === 'myproducts' ? (
+            /* MY PRODUCTS PAGE (ORDERS, EARNINGS & STATUS MANAGEMENT) */
+            <div className="p-6 max-w-7xl mx-auto space-y-8 w-full flex-1">
+              <div>
+                <h2 className="text-2xl font-bold">My Listed Products & Order Management</h2>
+                <p className="text-xs text-slate-400 mt-1">Only manage mark-as-sold and availability status for your own items here.</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className={`p-6 rounded-2xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+                  <p className="text-xs text-slate-400 font-medium uppercase">Total Sales Revenue</p>
+                  <h3 className="text-3xl font-extrabold text-emerald-400 mt-1">₹{totalEarned}</h3>
+                  <p className="text-xs text-slate-500 mt-1">{soldItems.length} items sold</p>
+                </div>
+
+                <div className={`p-6 rounded-2xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+                  <p className="text-xs text-slate-400 font-medium uppercase">Active Seller Mode Status</p>
+                  <h3 className="text-2xl font-bold text-indigo-400 mt-1">
+                    {matrixWorld === 'escaped' ? 'Escaped the Matrix (Seller Mode Active)' : 'In Matrix (Buyer View)'}
+                  </h3>
+                </div>
+              </div>
+
+              {/* MY PRODUCTS LIST */}
+              <div className={`p-6 rounded-2xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+                <h3 className="font-bold mb-4">My Items ({myProducts.length})</h3>
+                {myProducts.length === 0 ? (
+                  <p className="text-xs text-slate-500">You haven't posted any items for sale yet.</p>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {myProducts.map(item => (
+                      <div key={item.id} className={`p-4 rounded-xl border ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-slate-50 border-slate-200'}`}>
+                        <div className="h-36 w-full rounded-lg overflow-hidden mb-3">
+                          <img src={item.image_url} className="w-full h-full object-cover" />
+                        </div>
+                        <div className="flex justify-between items-center mb-2">
+                          <h4 className="font-bold text-sm">{item.title}</h4>
+                          <span className="font-bold text-indigo-400">₹{item.price}</span>
+                        </div>
+                        <button
+                          onClick={() => toggleStatus(item.id)}
+                          className={`w-full py-1.5 rounded text-xs font-semibold flex items-center justify-center gap-1 mt-2 ${
+                            item.status === 'available' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                          }`}
+                        >
+                          <i data-lucide="check-circle-2" className="w-3.5 h-3.5"></i>
+                          Mark as {item.status === 'available' ? 'Sold' : 'Available'}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            /* EXPLORE FEED WITH FAST SVG CHARTS AT TOP */
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+              
+              {/* TOP ANALYTICS DASHBOARD AT TOP */}
+              {activeTab === 'explore' && (
+                <div className="mb-8 space-y-3">
+                  <div>
+                    <h2 className="text-xl font-bold">🔥 Top 5 Campus Marketplace Trends</h2>
+                    <p className="text-xs text-slate-400">Fast SVG analytics loading instantly at the top</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className={`p-4 rounded-2xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+                      <h3 className="text-xs font-bold text-slate-400 uppercase">Top 5 Most Sold Products</h3>
+                      <FastBarChart data={analyticsData} dataKey="sellVolume" color="#6366f1" />
+                    </div>
+
+                    <div className={`p-4 rounded-2xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+                      <h3 className="text-xs font-bold text-slate-400 uppercase">Top 5 Highest Demanded / Bought Products</h3>
+                      <FastBarChart data={analyticsData} dataKey="buyDemand" color="#10b981" />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* SEARCH & FILTERS */}
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                <div className="relative flex-1 w-full sm:max-w-md">
+                  <i data-lucide="search" className="absolute left-3 top-2.5 h-4 w-4 text-slate-400"></i>
+                  <input
+                    type="text"
+                    placeholder="Search campus products..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className={`w-full pl-9 pr-4 py-2 border rounded-lg text-sm outline-none ${darkMode ? 'bg-slate-900 border-slate-800 focus:border-indigo-500' : 'bg-white border-slate-200'}`}
+                  />
+                </div>
+
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className={`border text-sm rounded-lg px-3 py-2 outline-none ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}
+                  >
+                    <option value="All">All Categories</option>
+                    <option value="Textbooks">Textbooks</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Lab Supplies">Lab Supplies</option>
+                    <option value="Essentials">Essentials</option>
+                    <option value="Others">Others</option>
+                    <option value="Cheaper than your College">Cheaper than your College</option>
+                  </select>
+
+                  <button
+                    onClick={() => setShowModal(true)}
+                    className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition whitespace-nowrap shadow-lg shadow-indigo-600/30"
+                  >
+                    <i data-lucide="plus" className="w-4 h-4"></i>
+                    Sell an Item
+                  </button>
+                </div>
+              </div>
+
+              {/* PRODUCT GRID */}
+              {filteredListings.length === 0 ? (
+                <div className={`text-center py-16 rounded-2xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+                  <p className="text-slate-500">No items found matching your filter.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredListings.map((item) => {
+                    const isWishlisted = wishlist.includes(item.id);
+                    return (
+                      <div key={item.id} className={`image-card-container rounded-xl overflow-hidden border transition flex flex-col ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+                        {/* Image Expansion & Running Outline on Hover */}
+                        <div className="relative h-48 w-full bg-slate-800 overflow-hidden">
+                          <img src={item.image_url} alt={item.title} className="image-card-hover w-full h-full object-cover" />
+                          {item.status === 'sold' && (
+                            <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
+                              <span className="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">SOLD</span>
+                            </div>
+                          )}
+                          <button
+                            onClick={() => toggleWishlist(item.id, item.title)}
+                            className="absolute top-2 right-2 p-2 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white transition z-10"
+                          >
+                            <i data-lucide="heart" className={`w-4 h-4 ${isWishlisted ? 'fill-rose-400 text-rose-400' : 'text-slate-300'}`}></i>
+                          </button>
+                        </div>
+
+                        <div className="p-5 flex-1 flex flex-col justify-between">
+                          <div>
+                            <div className="flex justify-between items-start mb-2">
+                              <h3 className="font-semibold">{item.title}</h3>
+                              <span className="font-bold text-indigo-400">₹{item.price}</span>
+                            </div>
+                            <p className="text-xs text-slate-400 line-clamp-2 mb-4">{item.description}</p>
+                          </div>
+
+                          <div className="flex items-center justify-between border-t border-slate-800/50 pt-3">
+                            <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded ${darkMode ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-600'}`}>
+                              <i data-lucide="tag" className="w-3 h-3"></i>
+                              {item.category}
+                            </span>
+                            <span className="text-[10px] text-slate-500">
+                              {item.isMine ? 'Your Item' : 'Student Seller'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </main>
+          )}
+
+          {/* SELL AN ITEM MODAL (CLOSES ON BACKDROP CLICK) */}
+          {showModal && (
+            <div 
+              ref={modalRef}
+              onClick={handleBackdropClick}
+              className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 backdrop-blur-xs"
+            >
+              <div className={`rounded-2xl max-w-md w-full p-6 shadow-2xl border ${darkMode ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'}`}>
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-bold">Sell an Item</h2>
+                  <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-white">
+                    <i data-lucide="x" className="w-5 h-5"></i>
+                  </button>
+                </div>
+
+                <form onSubmit={handleAddListing} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-medium mb-1">Product Title</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g., Escape the Matrix"
+                      value={formTitle}
+                      onChange={(e) => setFormTitle(e.target.value)}
+                      className={`w-full border rounded px-3 py-1.5 text-sm outline-none ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-slate-50 border-slate-200'}`}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-medium mb-1">Category</label>
+                      <select
+                        value={formCategory}
+                        onChange={(e) => setFormCategory(e.target.value)}
+                        className={`w-full border rounded px-2 py-1.5 text-sm outline-none ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-slate-50 border-slate-200'}`}
+                      >
+                        <option value="Textbooks">Textbooks</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Lab Supplies">Lab Supplies</option>
+                        <option value="Essentials">Essentials</option>
+                        <option value="Others">Others</option>
+                        <option value="Cheaper than your College">Cheaper than your College</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium mb-1">Price (₹)</label>
+                      <input
+                        type="number"
+                        required
+                        placeholder="499"
+                        value={formPrice}
+                        onChange={(e) => setFormPrice(e.target.value)}
+                        className={`w-full border rounded px-3 py-1.5 text-sm outline-none ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-slate-50 border-slate-200'}`}
+                      />
+                    </div>
+                  </div>
+
+                  {/* JPG / PNG Image File Attachment */}
+                  <div>
+                    <label className="block text-xs font-medium mb-1">Attach Image (JPG / PNG)</label>
+                    <input
+                      type="file"
+                      accept="image/png, image/jpeg, image/jpg"
+                      onChange={handleImageUpload}
+                      className="text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between items-center mb-1">
+                      <label className="text-xs font-medium">Description</label>
+                      <button
+                        type="button"
+                        onClick={handleGenerateAI}
+                        disabled={isGenerating}
+                        className="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 font-medium"
+                      >
+                        <i data-lucide="sparkles" className="w-3 h-3"></i>
+                        {isGenerating ? 'Generating...' : 'Auto-Generate with AI'}
+                      </button>
+                    </div>
+                    <textarea
+                      rows={3}
+                      required
+                      value={formDesc}
+                      onChange={(e) => setFormDesc(e.target.value)}
+                      className={`w-full border rounded p-2 text-sm outline-none ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-slate-50 border-slate-200'}`}
+                    ></textarea>
+                  </div>
+
+                  <div className="flex justify-end gap-2 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowModal(false)}
+                      className="px-4 py-1.5 text-sm text-slate-400 hover:bg-slate-800 rounded"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-4 py-1.5 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-500 font-medium"
+                    >
+                      Publish Listing
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
