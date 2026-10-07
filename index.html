@@ -15,26 +15,36 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <!-- Canvas Confetti for Celebration -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Firebase App & Auth SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     
-    /* 🏹 Bow Emoji Cursor (Left-Facing & Compact) */
+    /* 🏹 Left-Pointing Mirror Bow Emoji Cursor */
     body, button, input, select, textarea, a, div {
-      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><text y='18' font-size='18'>🏹</text></svg>") 0 0, auto !important;
+      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><g transform='scale(-1, 1) translate(-24, 0)'><text y='18' font-size='18'>🏹</text></g></svg>") 0 0, auto !important;
     }
 
-    /* Arrow Shot Click Animation */
-    .arrow-shot-animation {
+    /* Arrow Shooting Animation towards Pop-up */
+    .arrow-flying-celebration {
       position: fixed;
-      pointer-events: none;
       z-index: 9999;
-      font-size: 16px;
-      animation: shootArrow 0.5s ease-out forwards;
+      font-size: 28px;
+      pointer-events: none;
+      animation: flyAround 7s ease-in-out forwards;
     }
 
-    @keyframes shootArrow {
-      0% { transform: translate(0, 0) scale(1.2); opacity: 1; }
-      100% { transform: translate(-80px, -80px) scale(0.6); opacity: 0; }
+    @keyframes flyAround {
+      0% { top: 80%; left: 50%; transform: rotate(0deg) scale(1); }
+      20% { top: 20%; left: 80%; transform: rotate(45deg) scale(1.2); }
+      40% { top: 70%; left: 10%; transform: rotate(-90deg) scale(1.1); }
+      60% { top: 30%; left: 30%; transform: rotate(180deg) scale(1.3); }
+      80% { top: 60%; left: 70%; transform: rotate(90deg) scale(1.2); }
+      90% { top: 40%; left: 50%; transform: rotate(0deg) scale(1.5); }
+      100% { top: 20%; left: 50%; transform: scale(2) rotate(360deg); opacity: 0; }
     }
 
     /* Image Hover Outline Effect */
@@ -54,13 +64,34 @@
 
   <div id="root"></div>
 
+  <!-- FIREBASE INITIALIZATION SCRIPT -->
+  <script>
+    // Replace with your actual Firebase Web Config details from Firebase Console
+    const firebaseConfig = {
+  apiKey: "AIzaSyAJwzQOqGYYV1YKgfvyuknrzrCOrI6OXYc",
+  authDomain: "escape-the-matrix-76050.firebaseapp.com",
+  projectId: "escape-the-matrix-76050",
+  storageBucket: "escape-the-matrix-76050.firebasestorage.app",
+  messagingSenderId: "862745449376",
+  appId: "1:862745449376:web:7e147198e47b268ddd0ac5",
+  measurementId: "G-4884XYRRF3"
+    };
+    
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+  </script>
+
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
 
     const GEMINI_API_KEY = ""; 
     const WEATHER_API_KEY = ""; 
 
-    // Quantity-Based Fast SVG Bar Chart Component
+    // Quantity-Based SVG Bar Chart Component
     function QuantityBarChart({ data, dataKey, color }) {
       const maxValue = Math.max(...data.map(d => d[dataKey]));
       return (
@@ -86,7 +117,6 @@
       );
     }
 
-    // Top 5 Item Quantities Data
     const quantityAnalyticsData = [
       { name: 'Escape Matrix', sellQty: 185, buyQty: 210 },
       { name: 'Headphones', sellQty: 120, buyQty: 150 },
@@ -95,54 +125,35 @@
       { name: 'Graphing Calc', sellQty: 72, buyQty: 95 }
     ];
 
-    // 20+ Sample Products (Textbooks, Headphones, Chargers, Lab Gear)
     const initialListings = [
-      { id: '1', title: 'Escape the Matrix', description: 'Ultimate campus survival & productivity guide book.', price: 499, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500', isMine: false },
-      { id: '2', title: 'Data Structures & Algorithms', description: 'Core CS concepts textbook with C/C++ examples.', price: 550, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=500', isMine: false },
-      { id: '3', title: 'Physics for Engineers Vol 1', description: 'Standard reference book for engineering physics.', price: 420, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=500', isMine: false },
-      { id: '4', title: 'Organic Chemistry Handbook', description: 'Complete reaction mechanism study guide.', price: 600, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=500', isMine: false },
-      { id: '5', title: 'Digital Electronics Systems', description: 'Logic gates and microprocessors manual.', price: 480, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=500', isMine: false },
-      { id: '6', title: 'Sony Over-Ear Studio Headphones', description: 'Noise-canceling deep bass study headphones.', price: 2499, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500', isMine: true },
-      { id: '7', title: 'Anker Fast Type-C Charger 65W', description: 'Ultra-fast laptop and mobile wall adapter.', price: 1299, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=500', isMine: false },
-      { id: '8', title: 'JBL Wireless Sports Earbuds', description: 'Sweatproof Bluetooth earphones for campus gym.', price: 1899, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500', isMine: false },
-      { id: '9', title: 'Apple 20W USB-C Power Adapter', description: 'Original fast charger brick for iPhones.', price: 1499, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1622445268465-843d63d03713?w=500', isMine: false },
-      { id: '10', title: 'Boat Bassheads Wired Earphones', description: 'Tangle-free durable auxiliary wired headphones.', price: 399, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=500', isMine: false },
-      { id: '11', title: 'Samsung 25W Super Fast Charger', description: 'Type-C to Type-C fast charging kit.', price: 999, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1585338107529-13afc5f02586?w=500', isMine: false },
-      { id: '12', title: 'Sennheiser Studio Monitor Headphones', description: 'Hi-Fi professional audio headphones.', price: 3499, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=500', isMine: false },
-      { id: '13', title: 'Multi-Plug Surge Protector Extension', description: '4-Socket power board with dual USB ports.', price: 799, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500', isMine: false },
-      { id: '14', title: 'Realme Buds Wireless Neckband', description: '17-Hour battery neckband wireless earphone.', price: 1199, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?w=500', isMine: false },
-      { id: '15', title: 'MagSafe Magnetic Wireless Charger', description: 'Qi Wireless charging pad for dorm desk.', price: 1599, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1617839625591-e5a789593135?w=500', isMine: false },
-      { id: '16', title: 'Chemistry Lab Coat & Safety Goggles', description: 'Standard cotton lab coat set.', price: 650, category: 'Lab Supplies', status: 'sold', image_url: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=500', isMine: true },
-      { id: '17', title: 'Ergonomic Study Desk Lamp', description: 'Warm LED lamp with touch controls.', price: 799, category: 'Essentials', status: 'available', image_url: 'https://images.unsplash.com/photo-1534353436294-0dbd4bdac845?w=500', isMine: false },
-      { id: '18', title: 'Casio FX-991EX Scientific Calculator', description: 'Non-programmable exam approved calculator.', price: 1250, category: 'Cheaper than your College', status: 'available', image_url: 'https://images.unsplash.com/photo-1611117775350-ac3950990985?w=500', isMine: false },
-      { id: '19', title: 'Insulated Thermal Water Bottle 1L', description: 'Keeps water cold for 24 hours.', price: 450, category: 'Essentials', status: 'available', image_url: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500', isMine: false },
-      { id: '20', title: 'Engineering Drafting Mini-Drafter', description: 'Precision graphics tool with carrying canvas bag.', price: 650, category: 'Others', status: 'available', image_url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=500', isMine: false },
+      { id: '1', title: 'Escape the Matrix', description: 'Ultimate campus survival & productivity guide book.', price: 499, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500', sellerName: 'Kaustav (Core Member)', sellerEmail: 'kaustav@university.edu', isIncognito: false },
+      { id: '2', title: 'Data Structures & Algorithms', description: 'Core CS concepts textbook with C/C++ examples.', price: 550, category: 'Textbooks', status: 'available', image_url: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=500', sellerName: 'Senior Student', sellerEmail: 'senior@university.edu', isIncognito: false },
+      { id: '3', title: 'Sony Over-Ear Headphones', description: 'Noise-canceling deep bass study headphones.', price: 2499, category: 'Electronics', status: 'available', image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500', sellerName: 'Alex CS', sellerEmail: 'alex@university.edu', isIncognito: false },
+      { id: '4', title: 'Casio FX-991EX Scientific Calculator', description: 'Exam approved non-programmable calculator.', price: 1250, category: 'Cheaper than your College', status: 'available', image_url: 'https://images.unsplash.com/photo-1611117775350-ac3950990985?w=500', sellerName: 'Rahul (COSMOS)', sellerEmail: 'rahul@university.edu', isIncognito: false },
     ];
 
-    // Incognito Stealth Mode Items
     const incognitoListings = [
-      { id: 'inc-1', title: 'Secret Vape Pod Mod 5000', description: 'Discreet rechargeable flavor pod.', price: 1200, category: 'Incognito Special', image_url: 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?w=500' },
-      { id: 'inc-2', title: 'Stealth Black Undergarments 3-Pack', description: 'Unmarked plain delivery box.', price: 899, category: 'Incognito Special', image_url: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=500' },
-      { id: 'inc-3', title: 'Discreet Mint Nicotine Pouches', description: 'Sealed pocket pack.', price: 350, category: 'Incognito Special', image_url: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500' }
+      { id: 'inc-1', title: 'Secret Vape Pod Mod 5000', description: 'Discreet rechargeable flavor pod.', price: 1200, category: 'Incognito Special', image_url: 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?w=500', sellerName: 'Anonymous Seller', isIncognito: true },
+      { id: 'inc-2', title: 'Stealth Black Undergarments 3-Pack', description: 'Unmarked plain delivery box.', price: 899, category: 'Incognito Special', image_url: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=500', sellerName: 'Anonymous Seller', isIncognito: true }
     ];
 
     function App() {
-      // LocalStorage Cache Initialization
-      const [isAuthenticated, setIsAuthenticated] = useState(() => localStorage.getItem('matrix_auth') === 'true');
-      const [username, setUsername] = useState(() => localStorage.getItem('matrix_user') || '');
+      // Firebase Auth & User State
+      const [currentUser, setCurrentUser] = useState(null);
+      const [email, setEmail] = useState('');
       const [password, setPassword] = useState('');
-      const [listings, setListings] = useState(() => {
-        const saved = localStorage.getItem('matrix_listings');
-        return saved ? JSON.parse(saved) : initialListings;
-      });
-      const [wishlist, setWishlist] = useState(() => {
-        const saved = localStorage.getItem('matrix_wishlist');
-        return saved ? JSON.parse(saved) : [];
-      });
+      const [authMode, setAuthMode] = useState('login'); // 'login' | 'reset'
 
-      // Navigation & World Pages
+      // Global Shared Database Listings State
+      const [listings, setListings] = useState(initialListings);
+      const [wishlist, setWishlist] = useState([]);
+
+      // UI Modes & Navigation
+      const [darkMode, setDarkMode] = useState(true);
       const [activePage, setActivePage] = useState('explore'); // 'explore' | 'escaped'
       const [showOrdersModal, setShowOrdersModal] = useState(false);
+      const [showBuyConfirmModal, setShowBuyConfirmModal] = useState(false);
+      const [selectedBuyItem, setSelectedBuyItem] = useState(null);
       const [isIncognito, setIsIncognito] = useState(false);
 
       // Filters & Search
@@ -151,57 +162,51 @@
       const [wishlistName, setWishlistName] = useState('My Favorites');
       const [toastMessage, setToastMessage] = useState('');
 
-      // Uniform Timer Popup (1 Min Timer)
+      // Junior Uniform Timer (1 Min)
       const [showUniformTimer, setShowUniformTimer] = useState(false);
       const [timerSeconds, setTimerSeconds] = useState(60);
 
-      // Create Sell Modal
+      // Create Sell Modal State
       const [showSellModal, setShowSellModal] = useState(false);
       const [formTitle, setFormTitle] = useState('');
       const [formCategory, setFormCategory] = useState('Textbooks');
       const [formPrice, setFormPrice] = useState('');
       const [formDesc, setFormDesc] = useState('');
       const [formImage, setFormImage] = useState('https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500');
+      const [formIsIncognito, setFormIsIncognito] = useState(false);
       const [isGenerating, setIsGenerating] = useState(false);
 
-      // Celebration Overlay State
+      // Celebration Animation State
       const [celebrationMsg, setCelebrationMsg] = useState('');
+      const [isArrowFlying, setIsArrowFlying] = useState(false);
+
+      // Floating Profile Popover State
+      const [showProfileHover, setShowProfileHover] = useState(false);
 
       const ordersModalRef = useRef();
+      const buyConfirmModalRef = useRef();
       const sellModalRef = useRef();
 
       useEffect(() => {
         if (window.lucide) window.lucide.createIcons();
       });
 
-      // Cache Persistence
+      // Firebase Auth Listener (Persistent Login Check)
       useEffect(() => {
-        localStorage.setItem('matrix_listings', JSON.stringify(listings));
-      }, [listings]);
-
-      useEffect(() => {
-        localStorage.setItem('matrix_wishlist', JSON.stringify(wishlist));
-      }, [wishlist]);
-
-      // Click Arrow Shot Animation Listener
-      useEffect(() => {
-        const handleArrowClick = (e) => {
-          const arrowEl = document.createElement('div');
-          arrowEl.className = 'arrow-shot-animation';
-          arrowEl.innerText = '🏹';
-          arrowEl.style.left = `${e.clientX}px`;
-          arrowEl.style.top = `${e.clientY}px`;
-          document.body.appendChild(arrowEl);
-          setTimeout(() => arrowEl.remove(), 500);
-        };
-        window.addEventListener('click', handleArrowClick);
-        return () => window.removeEventListener('click', handleArrowClick);
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+          if (user) {
+            setCurrentUser(user);
+            setShowUniformTimer(true);
+          } else {
+            setCurrentUser(null);
+          }
+        });
+        return () => unsubscribe();
       }, []);
 
-      // 1-Minute Junior Uniform Timer trigger upon login
+      // 1-Minute Junior Uniform Timer
       useEffect(() => {
-        if (isAuthenticated) {
-          setShowUniformTimer(true);
+        if (currentUser && showUniformTimer) {
           const interval = setInterval(() => {
             setTimerSeconds(prev => {
               if (prev <= 1) {
@@ -214,35 +219,58 @@
           }, 1000);
           return () => clearInterval(interval);
         }
-      }, [isAuthenticated]);
+      }, [currentUser, showUniformTimer]);
 
       const triggerToast = (msg) => {
         setToastMessage(msg);
         setTimeout(() => setToastMessage(''), 3000);
       };
 
-      // Confetti & Celebration Trigger
-      const triggerCelebration = (actionText) => {
-        setCelebrationMsg(actionText);
-        if (window.confetti) {
-          window.confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
-        }
-        setTimeout(() => setCelebrationMsg(''), 4000);
+      // Arrow Flying Animation (7 Seconds) & Party Confetti Burst
+      const triggerArrowCelebration = (msg) => {
+        setIsArrowFlying(true);
+        setTimeout(() => {
+          setIsArrowFlying(false);
+          setCelebrationMsg(msg);
+          if (window.confetti) {
+            window.confetti({ particleCount: 150, spread: 90, origin: { y: 0.5 } });
+          }
+          setTimeout(() => setCelebrationMsg(''), 4500);
+        }, 7000);
       };
 
-      const handleLogin = (e) => {
+      // Firebase Authentication Logic
+      const handleFirebaseAuth = async (e) => {
         e.preventDefault();
-        if (username && password) {
-          setIsAuthenticated(true);
-          localStorage.setItem('matrix_auth', 'true');
-          localStorage.setItem('matrix_user', username);
-          triggerToast(`Logged in as ${username}`);
+        try {
+          if (authMode === 'reset') {
+            await auth.sendPasswordResetEmail(email);
+            triggerToast('Password reset link sent to your email!');
+            setAuthMode('login');
+            return;
+          }
+
+          // Try signing in; if user doesn't exist, register them
+          try {
+            await auth.signInWithEmailAndPassword(email, password);
+            triggerToast('Welcome back to Escape the Matrix!');
+          } catch (signInErr) {
+            if (signInErr.code === 'auth/user-not-found' || signInErr.code === 'auth/invalid-credential') {
+              await auth.createUserWithEmailAndPassword(email, password);
+              triggerToast('Account created and logged in!');
+            } else {
+              throw signInErr;
+            }
+          }
+        } catch (err) {
+          alert(err.message);
         }
       };
 
       const handleLogout = () => {
-        setIsAuthenticated(false);
-        localStorage.removeItem('matrix_auth');
+        auth.signOut();
+        setCurrentUser(null);
+        triggerToast('Logged out successfully.');
       };
 
       const toggleWishlist = (id, title) => {
@@ -270,7 +298,7 @@
         try {
           if (!GEMINI_API_KEY) {
             setTimeout(() => {
-              setFormDesc(`Pristine condition ${formTitle} under ${formCategory}. Essential item for campus students!`);
+              setFormDesc(`Pristine condition ${formTitle} under ${formCategory}. Essential campus item on Escape the Matrix!`);
               setIsGenerating(false);
             }, 600);
             return;
@@ -290,6 +318,7 @@
         }
       };
 
+      // Add New Product (Visible to All Users)
       const handleAddListing = (e) => {
         e.preventDefault();
         const newListing = {
@@ -300,31 +329,49 @@
           description: formDesc,
           status: 'available',
           image_url: formImage,
+          sellerName: currentUser?.email?.split('@')[0] || 'Student Seller',
+          sellerEmail: currentUser?.email || 'student@university.edu',
+          isIncognito: formIsIncognito,
           isMine: true
         };
-        setListings([newListing, ...listings]);
+
+        if (formIsIncognito) {
+          incognitoListings.unshift(newListing);
+        } else {
+          setListings([newListing, ...listings]);
+        }
+
         setShowSellModal(false);
         setFormTitle('');
         setFormPrice('');
         setFormDesc('');
-        triggerCelebration(`Listing Published! You are already better than the college you study in! 🎓🚀`);
+        triggerArrowCelebration(`Listing Published! You are already better than the college you study in! 🎓🚀`);
       };
 
+      // Toggle Sold Status
       const toggleStatus = (id) => {
         setListings(listings.map(item => item.id === id ? { ...item, status: item.status === 'available' ? 'sold' : 'available' } : item));
-        triggerCelebration(`Order Updated! You are already better than the college you study in! 🎉`);
+        triggerArrowCelebration(`Item Status Updated! You are already better than the college you study in! 🎉`);
       };
 
-      // Modal Backdrop Click Close Logic
+      // Confirm Buy Order
+      const confirmBuyOrder = () => {
+        if (!selectedBuyItem) return;
+        setListings(listings.map(item => item.id === selectedBuyItem.id ? { ...item, status: 'sold' } : item));
+        setShowBuyConfirmModal(false);
+        triggerArrowCelebration(`Buy Order Finalized for "${selectedBuyItem.title}"! You are already better than the college you study in! 🛍️🎉`);
+      };
+
+      // Click Outside Modal Close Handler
       const handleModalBackdropClick = (e, ref, closeFn) => {
         if (ref.current && e.target === ref.current) closeFn();
       };
 
-      const myProducts = listings.filter(item => item.isMine);
+      const myProducts = listings.filter(item => item.isMine || item.sellerEmail === currentUser?.email);
       const soldItems = myProducts.filter(item => item.status === 'sold');
       const totalEarned = soldItems.reduce((sum, item) => sum + item.price, 0);
 
-      // Smooth Case-Insensitive Search Engine
+      // Search & Filters
       const currentDataset = isIncognito ? incognitoListings : listings;
       const filteredListings = currentDataset.filter(item => {
         const query = searchQuery.toLowerCase().trim();
@@ -332,12 +379,12 @@
                               item.description.toLowerCase().includes(query) ||
                               item.category.toLowerCase().includes(query);
         const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory;
-        const matchesPageFilter = activePage === 'escaped' ? item.isMine : true;
+        const matchesPageFilter = activePage === 'escaped' ? (item.isMine || item.sellerEmail === currentUser?.email) : true;
         return matchesSearch && matchesCategory && matchesPageFilter;
       });
 
-      // PAGE 1: LOGIN GATE
-      if (!isAuthenticated) {
+      // FIREBASE AUTH / FORGOT PASSWORD GATE
+      if (!currentUser) {
         return (
           <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-4">
             <div className="bg-slate-900 border border-slate-800 p-8 rounded-2xl max-w-md w-full shadow-2xl">
@@ -348,39 +395,64 @@
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
                   Escape the Matrix
                 </h1>
-                <p className="text-slate-400 text-xs mt-1">Campus Marketplace Login</p>
+                <p className="text-slate-400 text-xs mt-1">
+                  {authMode === 'reset' ? 'Password Reset Window' : 'Firebase Authentication Portal'}
+                </p>
               </div>
 
-              <form onSubmit={handleLogin} className="space-y-4">
+              <form onSubmit={handleFirebaseAuth} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">Username / Email</label>
+                  <label className="block text-xs font-medium text-slate-300 mb-1">Email Address</label>
                   <input
-                    type="text"
+                    type="email"
                     required
                     placeholder="student@university.edu"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-indigo-500"
                   />
                 </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">Password</label>
-                  <input
-                    type="password"
-                    required
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-indigo-500"
-                  />
-                </div>
+
+                {authMode === 'login' && (
+                  <div>
+                    <label className="block text-xs font-medium text-slate-300 mb-1">Password</label>
+                    <input
+                      type="password"
+                      required
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-indigo-500"
+                    />
+                  </div>
+                )}
 
                 <button
                   type="submit"
                   className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 font-semibold rounded-lg text-sm text-white transition shadow-lg shadow-indigo-600/30"
                 >
-                  Enter Marketplace
+                  {authMode === 'reset' ? 'Send Password Reset Link' : 'Login / Register with Firebase'}
                 </button>
+
+                <div className="text-center pt-2">
+                  {authMode === 'login' ? (
+                    <button
+                      type="button"
+                      onClick={() => setAuthMode('reset')}
+                      className="text-xs text-indigo-400 hover:underline"
+                    >
+                      Forgot password? Click to reset
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setAuthMode('login')}
+                      className="text-xs text-slate-400 hover:underline"
+                    >
+                      Back to Login
+                    </button>
+                  )}
+                </div>
               </form>
             </div>
           </div>
@@ -388,9 +460,12 @@
       }
 
       return (
-        <div className={`min-h-screen flex flex-col transition-colors duration-500 ${isIncognito ? 'bg-black text-rose-100' : 'bg-slate-950 text-slate-100'}`}>
+        <div className={`min-h-screen flex flex-col transition-colors duration-500 ${isIncognito ? 'bg-black text-rose-100' : darkMode ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
           
-          {/* PARTY CELEBRATION OVERLAY */}
+          {/* FLYING ARROW ANIMATION */}
+          {isArrowFlying && <div className="arrow-flying-celebration">🏹</div>}
+
+          {/* PARTY CELEBRATION POPUP */}
           {celebrationMsg && (
             <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-r from-emerald-500 via-indigo-600 to-amber-500 text-white px-6 py-3 rounded-2xl shadow-2xl font-bold text-center animate-bounce border-2 border-white">
               🎉 Congratulations! {celebrationMsg}
@@ -405,7 +480,7 @@
             </div>
           )}
 
-          {/* JUNIOR UNIFORM TIMER FLOATING POPUP (1 MINUTE TIMER) */}
+          {/* JUNIOR UNIFORM TIMER POPUP */}
           {showUniformTimer && (
             <div className="fixed bottom-4 left-4 z-40 bg-red-950/90 border border-red-700 text-red-200 p-3 rounded-xl shadow-2xl max-w-sm flex items-center gap-3 backdrop-blur-md">
               <span className="text-2xl font-bold text-red-400">{timerSeconds}s</span>
@@ -419,7 +494,7 @@
           )}
 
           {/* GLOBAL HEADER */}
-          <header className={`sticky top-0 z-30 border-b backdrop-blur ${isIncognito ? 'bg-zinc-950/90 border-rose-950' : 'bg-slate-900/90 border-slate-800'}`}>
+          <header className={`sticky top-0 z-30 border-b backdrop-blur ${isIncognito ? 'bg-zinc-950/90 border-rose-950' : darkMode ? 'bg-slate-900/90 border-slate-800' : 'bg-white/90 border-slate-200'}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
               
               <div className="flex items-center gap-2 cursor-pointer" onClick={() => setActivePage('explore')}>
@@ -454,13 +529,46 @@
                 </button>
               </div>
 
-              {/* USER PROFILE & LOGOUT */}
-              <div className="flex items-center gap-3 text-xs">
-                <span className="hidden sm:inline text-slate-400">👤 {username}</span>
-                <button onClick={handleLogout} className="text-slate-400 hover:text-rose-400">
-                  <i data-lucide="log-out" className="w-4 h-4"></i>
+              {/* RIGHT CONTROLS: THEME TOGGLE & FLOATING PROFILE HOVER */}
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setDarkMode(!darkMode)}
+                  className={`p-2 rounded-lg border transition ${darkMode ? 'border-slate-800 text-amber-300 hover:bg-slate-800' : 'border-slate-200 text-slate-700 hover:bg-slate-100'}`}
+                  title="Toggle Light/Dark Theme"
+                >
+                  <i data-lucide={darkMode ? 'sun' : 'moon'} className="w-4 h-4"></i>
                 </button>
+
+                {/* FLOATING ROUND PROFILE BUTTON WITH HOVER DROPDOWN */}
+                <div 
+                  className="relative"
+                  onMouseEnter={() => setShowProfileHover(true)}
+                  onMouseLeave={() => setShowProfileHover(false)}
+                >
+                  <button className="w-9 h-9 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center border-2 border-indigo-400 shadow-lg">
+                    {currentUser?.email?.[0].toUpperCase() || 'U'}
+                  </button>
+
+                  {showProfileHover && (
+                    <div className="absolute right-0 top-10 w-56 bg-slate-900 border border-slate-800 text-white rounded-2xl shadow-2xl p-4 space-y-3 z-50 text-xs">
+                      <div>
+                        <p className="font-bold text-indigo-400">{currentUser?.email?.split('@')[0]}</p>
+                        <p className="text-[10px] text-slate-400">{currentUser?.email}</p>
+                      </div>
+                      <hr className="border-slate-800" />
+                      <button onClick={() => alert('Payment Settings: UPI & Campus Gateway Connected')} className="w-full text-left py-1 hover:text-indigo-400 flex items-center gap-2">
+                        <i data-lucide="credit-card" className="w-3.5 h-3.5"></i>
+                        Payment Settings
+                      </button>
+                      <button onClick={handleLogout} className="w-full text-left py-1 text-rose-400 hover:underline flex items-center gap-2">
+                        <i data-lucide="log-out" className="w-3.5 h-3.5"></i>
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
+
             </div>
           </header>
 
@@ -476,12 +584,12 @@
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <div className="p-4 rounded-2xl border bg-slate-900 border-slate-800">
+                  <div className={`p-4 rounded-2xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
                     <h3 className="text-xs font-bold text-slate-400 uppercase">Top 5 Most Sold Item Quantities</h3>
                     <QuantityBarChart data={quantityAnalyticsData} dataKey="sellQty" color="#6366f1" />
                   </div>
 
-                  <div className="p-4 rounded-2xl border bg-slate-900 border-slate-800">
+                  <div className={`p-4 rounded-2xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
                     <h3 className="text-xs font-bold text-slate-400 uppercase">Top 5 Highest Demanded Quantities</h3>
                     <QuantityBarChart data={quantityAnalyticsData} dataKey="buyQty" color="#10b981" />
                   </div>
@@ -489,9 +597,9 @@
               </div>
             )}
 
-            {/* ESCAPED PAGE SPECIFIC HEADING & SELL BUTTON (NO REPEAT ON MAIN) */}
+            {/* ESCAPED PAGE SPECIFIC HEADING & SELL BUTTON */}
             {activePage === 'escaped' && (
-              <div className="mb-8 p-6 rounded-2xl border bg-slate-900 border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div className={`mb-8 p-6 rounded-2xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'} flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4`}>
                 <div>
                   <h2 className="text-2xl font-bold text-emerald-400">Seller World & Stock Portal</h2>
                   <p className="text-xs text-slate-400 mt-1">Track your active listings, manage sold items, and publish new stock.</p>
@@ -515,14 +623,14 @@
                   placeholder="Fast case-insensitive search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 border rounded-lg text-sm outline-none bg-slate-900 border-slate-800 focus:border-indigo-500"
+                  className={`w-full pl-9 pr-4 py-2 border rounded-lg text-sm outline-none ${darkMode ? 'bg-slate-900 border-slate-800 focus:border-indigo-500' : 'bg-white border-slate-200'}`}
                 />
               </div>
 
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-slate-900 border border-slate-800 text-sm rounded-lg px-3 py-2 outline-none w-full sm:w-auto"
+                className={`border text-sm rounded-lg px-3 py-2 outline-none w-full sm:w-auto ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}
               >
                 <option value="All">All Categories</option>
                 <option value="Textbooks">Textbooks</option>
@@ -536,7 +644,7 @@
 
             {/* PRODUCT LISTINGS GRID */}
             {filteredListings.length === 0 ? (
-              <div className="text-center py-16 rounded-2xl border bg-slate-900 border-slate-800">
+              <div className={`text-center py-16 rounded-2xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
                 <p className="text-slate-500">No items found matching your search.</p>
               </div>
             ) : (
@@ -544,7 +652,7 @@
                 {filteredListings.map((item) => {
                   const isWishlisted = wishlist.includes(item.id);
                   return (
-                    <div key={item.id} className="image-card-container rounded-xl overflow-hidden border transition flex flex-col bg-slate-900 border-slate-800">
+                    <div key={item.id} className={`image-card-container rounded-xl overflow-hidden border transition flex flex-col ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
                       <div className="relative h-48 w-full bg-slate-800 overflow-hidden">
                         <img src={item.image_url} alt={item.title} className="image-card-hover w-full h-full object-cover" />
                         {item.status === 'sold' && (
@@ -563,10 +671,15 @@
                       <div className="p-5 flex-1 flex flex-col justify-between">
                         <div>
                           <div className="flex justify-between items-start mb-2">
-                            <h3 className="font-semibold text-slate-100">{item.title}</h3>
+                            <h3 className="font-semibold">{item.title}</h3>
                             <span className="font-bold text-indigo-400">₹{item.price}</span>
                           </div>
-                          <p className="text-xs text-slate-400 line-clamp-2 mb-4">{item.description}</p>
+                          <p className="text-xs text-slate-400 line-clamp-2 mb-3">{item.description}</p>
+                          
+                          {/* SELLER DETAILS SHOWN IN EXPLORE */}
+                          <div className="text-[11px] text-indigo-300 mb-3 bg-indigo-950/40 p-2 rounded border border-indigo-900/40">
+                            👤 Seller: <span className="font-bold">{item.sellerName}</span> ({item.sellerEmail})
+                          </div>
                         </div>
 
                         <div className="flex items-center justify-between border-t border-slate-800 pt-3">
@@ -575,8 +688,8 @@
                             {item.category}
                           </span>
 
-                          {/* ACTION BUTTONS (SELLER STATUS ONLY IN ESCAPED PAGE) */}
-                          {activePage === 'escaped' && item.isMine ? (
+                          {/* ACTION BUTTONS */}
+                          {activePage === 'escaped' ? (
                             <button
                               onClick={() => toggleStatus(item.id)}
                               className={`text-xs font-medium px-2.5 py-1 rounded transition flex items-center gap-1 ${
@@ -588,10 +701,13 @@
                             </button>
                           ) : (
                             <button
-                              onClick={() => triggerCelebration(`Buy Order Initiated for "${item.title}"! You are already better than the college you study in! 🛍️🎉`)}
-                              className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-md font-medium"
+                              onClick={() => { setSelectedBuyItem(item); setShowBuyConfirmModal(true); }}
+                              disabled={item.status === 'sold'}
+                              className={`text-xs px-3 py-1 rounded-md font-medium transition ${
+                                item.status === 'sold' ? 'bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-500 text-white'
+                              }`}
                             >
-                              Buy Now
+                              {item.status === 'sold' ? 'Out of Stock' : 'Buy Now'}
                             </button>
                           )}
                         </div>
@@ -603,7 +719,31 @@
             )}
           </main>
 
-          {/* FLOATING MY ORDERS MODAL (CLOSES ON CLICK OUTSIDE) */}
+          {/* BUY CONFIRMATION POPUP */}
+          {showBuyConfirmModal && selectedBuyItem && (
+            <div 
+              ref={buyConfirmModalRef}
+              onClick={(e) => handleModalBackdropClick(e, buyConfirmModalRef, () => setShowBuyConfirmModal(false))}
+              className="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4 backdrop-blur-xs"
+            >
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl text-white space-y-4">
+                <h3 className="text-lg font-bold text-indigo-400">Confirm Buy Order</h3>
+                <p className="text-xs text-slate-300">
+                  Are you sure you want to purchase <span className="font-bold text-white">"{selectedBuyItem.title}"</span> for <span className="font-bold text-emerald-400">₹{selectedBuyItem.price}</span> from {selectedBuyItem.sellerName}?
+                </p>
+                <div className="flex justify-end gap-2 pt-2">
+                  <button onClick={() => setShowBuyConfirmModal(false)} className="px-3 py-1.5 text-xs text-slate-400 hover:bg-slate-800 rounded">
+                    Cancel
+                  </button>
+                  <button onClick={confirmBuyOrder} className="px-4 py-1.5 text-xs bg-emerald-600 hover:bg-emerald-500 text-white rounded font-bold">
+                    Confirm Purchase
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* FLOATING MY ORDERS MODAL */}
           {showOrdersModal && (
             <div 
               ref={ordersModalRef}
@@ -651,7 +791,7 @@
             </div>
           )}
 
-          {/* SELL AN ITEM MODAL (CLOSES ON CLICK OUTSIDE) */}
+          {/* SELL AN ITEM MODAL WITH GENERAL / INCOGNITO TOGGLE */}
           {showSellModal && (
             <div 
               ref={sellModalRef}
@@ -667,6 +807,27 @@
                 </div>
 
                 <form onSubmit={handleAddListing} className="space-y-4">
+                  {/* GENERAL VS INCOGNITO TOGGLE SWITCH */}
+                  <div className="bg-slate-800 p-1.5 rounded-xl flex items-center justify-between text-xs">
+                    <span className="font-semibold text-slate-300">Listing Mode:</span>
+                    <div className="flex gap-1">
+                      <button
+                        type="button"
+                        onClick={() => setFormIsIncognito(false)}
+                        className={`px-3 py-1 rounded-lg transition ${!formIsIncognito ? 'bg-indigo-600 text-white font-bold' : 'text-slate-400'}`}
+                      >
+                        General
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFormIsIncognito(true)}
+                        className={`px-3 py-1 rounded-lg transition ${formIsIncognito ? 'bg-rose-600 text-white font-bold' : 'text-slate-400'}`}
+                      >
+                        Incognito 🕵️‍♂️
+                      </button>
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-xs font-medium mb-1">Product Title</label>
                     <input
@@ -736,52 +897,4 @@
                       required
                       value={formDesc}
                       onChange={(e) => setFormDesc(e.target.value)}
-                      className="w-full bg-slate-800 border border-slate-700 rounded p-2 text-sm outline-none"
-                    ></textarea>
-                  </div>
-
-                  <div className="flex justify-end gap-2 pt-2">
-                    <button
-                      type="button"
-                      onClick={() => setShowSellModal(false)}
-                      className="px-4 py-1.5 text-sm text-slate-400 hover:bg-slate-800 rounded"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="px-4 py-1.5 text-sm bg-emerald-600 hover:bg-emerald-500 text-white rounded font-medium"
-                    >
-                      Publish Listing
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
-
-          {/* INCOGNITO STEALTH MODE TOGGLE (BOTTOM RIGHT CORNER) */}
-          <div className="fixed bottom-4 right-4 z-40">
-            <button
-              onClick={() => {
-                setIsIncognito(!isIncognito);
-                triggerToast(isIncognito ? 'Exited Incognito Mode' : '🕵️‍♂️ Incognito Secret Mode Enabled!');
-              }}
-              className={`px-3 py-2 rounded-full text-xs font-bold border shadow-2xl flex items-center gap-2 transition ${
-                isIncognito ? 'bg-rose-950 border-rose-700 text-rose-300' : 'bg-slate-900 border-slate-700 text-slate-300 hover:bg-slate-800'
-              }`}
-            >
-              <i data-lucide="eye-off" className="w-4 h-4 text-rose-400"></i>
-              <span>{isIncognito ? 'Exit Incognito Mode' : 'Incognito Mode 🕵️‍♂️'}</span>
-            </button>
-          </div>
-
-        </div>
-      );
-    }
-
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
-  </script>
-</body>
-</html>
+                      className
