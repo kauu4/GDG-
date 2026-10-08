@@ -300,7 +300,7 @@
         setTimeout(() => setToastMessage(''), 3000);
       };
 
-      // 💥 EXACT CELEBRATION FLOW: Immediate Banner -> Arrow Arc -> Banner Pop & Shockwave
+      // CELEBRATION FLOW: Immediate Banner -> Arrow Arc -> Banner Pop & Shockwave
       const triggerArrowExplosion = (msg) => {
         setCelebrationMsg(msg);
         setIsArrowFlying(true);
@@ -397,7 +397,7 @@
           setFormDesc(data?.candidates?.[0]?.content?.parts?.[0]?.text || `High quality ${formTitle} for students!`);
         } catch {
           alert('Failed to generate description.');
-        } fontally {
+        } finally {
           setIsGenerating(false);
         }
       };
@@ -431,7 +431,7 @@
         setFormTitle('');
         setFormPrice('');
         setFormDesc('');
-        setActivePage('explore'); // Immediately switch to Explore page so the newly created item is seen
+        setActivePage('explore'); // Switch immediately to Explore Page
         triggerArrowExplosion(`Listing Published by ${userNameClean}! Added immediately to Explore Feed! 🎓🚀`);
       };
 
@@ -847,7 +847,7 @@
                   </div>
                 )}
 
-                {/* SEARCH & CATEGORY FILTERS WITH REVISED PLACEHOLDER */}
+                {/* SEARCH & CATEGORY FILTERS WITH "what do you want?" PLACEHOLDER */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                   <div className="relative flex-1 w-full sm:max-w-md">
                     <i data-lucide="search" className="absolute left-3 top-2.5 h-4 w-4 text-slate-400"></i>
@@ -896,7 +896,7 @@
                               className="image-card-hover w-full h-full object-cover" 
                             />
                             
-                            {/* REPLACED STOCK: 0 WITH OUT OF STOCK BADGE */}
+                            {/* OUT OF STOCK BADGE */}
                             {isOutOfStock && (
                               <div className="absolute inset-0 bg-black/75 flex items-center justify-center">
                                 <span className="bg-rose-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Out of Stock</span>
