@@ -1,3 +1,6 @@
+
+
+Index · HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,7 +22,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
+ 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     
@@ -28,7 +31,7 @@
       cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><g transform='scale(-1, 1) translate(-24, 0)'><text y='18' font-size='18'>🏹</text></g></svg>") 0 0, auto !important;
       -webkit-tap-highlight-color: transparent;
     }
-
+ 
     /* 🏹 Smooth Fast Arrow Flying Animation targeting top pop-up banner */
     .arrow-flying-celebration {
       position: fixed;
@@ -37,7 +40,7 @@
       pointer-events: none;
       animation: circularFlyToPop 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
     }
-
+ 
     @keyframes circularFlyToPop {
       0% { top: 75%; left: 50%; transform: rotate(0deg) scale(1.2); opacity: 1; }
       30% { top: 45%; left: 70%; transform: rotate(120deg) scale(1); opacity: 1; }
@@ -45,7 +48,7 @@
       90% { top: 12%; left: 50%; transform: rotate(360deg) scale(0.8); opacity: 1; }
       100% { top: 8%; left: 50%; transform: rotate(360deg) scale(0.1); opacity: 0; }
     }
-
+ 
     /* Full Page Explosion Shockwave CSS Animation */
     .explosion-shockwave {
       position: fixed;
@@ -55,13 +58,13 @@
       background: radial-gradient(circle, rgba(245,158,11,0.5) 0%, rgba(99,102,241,0.3) 40%, rgba(16,185,129,0.2) 70%, rgba(0,0,0,0) 90%);
       animation: shockwavePulse 0.9s ease-out forwards;
     }
-
+ 
     @keyframes shockwavePulse {
       0% { transform: scale(0.1); opacity: 1; }
       50% { opacity: 0.9; }
       100% { transform: scale(2.8); opacity: 0; }
     }
-
+ 
     /* Image Hover Outline Effect */
     .image-card-hover {
       transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -73,7 +76,7 @@
       box-shadow: 0 0 14px rgba(245, 158, 11, 0.7);
       border-color: #f59e0b;
     }
-
+ 
     /* Hide Scrollbar for Horizontal Nav on Mobile */
     .no-scrollbar::-webkit-scrollbar {
       display: none;
@@ -85,9 +88,9 @@
   </style>
 </head>
 <body class="antialiased selection:bg-amber-500 selection:text-slate-950">
-
+ 
   <div id="root"></div>
-
+ 
   <!-- FIREBASE INITIALIZATION SCRIPT -->
   <script>
     const firebaseConfig = {
@@ -106,14 +109,26 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
   </script>
-
+ 
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
-
+ 
     const GEMINI_API_KEY = ""; 
     const WEATHER_API_KEY = ""; 
     const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500";
-
+ 
+    // Safe Lucide wrapper: React only owns the empty <span>; Lucide draws inside it.
+    function Icon({ name, className = '' }) {
+      const ref = useRef(null);
+      useEffect(() => {
+        if (ref.current && window.lucide) {
+          ref.current.innerHTML = `<i data-lucide="${name}" class="${className}"></i>`;
+          window.lucide.createIcons({ root: ref.current });
+        }
+      }, [name, className]);
+      return <span ref={ref} className="inline-flex items-center justify-center shrink-0"></span>;
+    }
+ 
     // Quantity-Based SVG Bar Chart Component
     function QuantityBarChart({ data, dataKey, color }) {
       const maxValue = Math.max(...data.map(d => d[dataKey])) || 1;
@@ -139,7 +154,7 @@
         </div>
       );
     }
-
+ 
     const quantityAnalyticsData = [
       { name: 'Headphones', sellQty: 120, buyQty: 150 },
       { name: 'USB-C Charger', sellQty: 98, buyQty: 130 },
@@ -147,14 +162,14 @@
       { name: 'Graphing Calc', sellQty: 72, buyQty: 95 },
       { name: 'Lab Coat Kit', sellQty: 65, buyQty: 88 }
     ];
-
+ 
     const seasonalSalesData = [
       { season: 'Feb (2nd Week)', item: 'Chocolate Gifting Boxes & Greeting Sets', reason: "Valentine's Week peak campus demand", boost: '340% demand surge' },
       { season: 'August (Start)', item: 'Lab Coats, Safety Goggles & Textbooks', reason: 'New semester entry for freshers', boost: '280% demand surge' },
       { season: 'November (Mid)', item: 'Noise-Canceling Studio Headphones', reason: 'Exam season concentration surge', boost: '190% demand surge' },
       { season: 'April (End)', item: 'Dorm Cooling Fans & Thermal Bottles', reason: 'Summer campus weather peak', boost: '210% demand surge' }
     ];
-
+ 
     const initialListings = [
       { id: '1', title: 'Data Structures & Algorithms in C++', description: 'Standard college DSA reference textbook in pristine condition.', price: 550, category: 'Textbooks', status: 'available', stock: 8, image_url: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=500', sellerName: 'Senior Student', sellerEmail: 'student1@university.edu', isIncognito: false },
       { id: '2', title: 'Physics for Engineers Vol 1', description: 'Complete mechanics & thermodynamics textbook for B.Tech.', price: 420, category: 'Textbooks', status: 'available', stock: 15, image_url: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=500', sellerName: 'Student Seller', sellerEmail: 'student2@university.edu', isIncognito: false },
@@ -177,28 +192,28 @@
       { id: '19', title: 'Engineering Drafting Mini-Drafter', description: 'Precision graphics tool with canvas carrying bag.', price: 650, category: 'Others', status: 'available', stock: 8, image_url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=500', sellerName: 'Student Seller', sellerEmail: 'student17@university.edu', isIncognito: false },
       { id: '20', title: 'Valentine Luxury Chocolate Gift Box', description: 'Assorted handcrafted chocolates for campus gifting.', price: 899, category: 'Essentials', status: 'available', stock: 15, image_url: 'https://images.unsplash.com/photo-1548848221-0c2e4e7353f2?w=500', sellerName: 'Student Seller', sellerEmail: 'student18@university.edu', isIncognito: false }
     ];
-
+ 
     const incognitoListings = [
       { id: 'inc-1', title: 'Secret Vape Pod Mod 5000', description: 'Discreet rechargeable flavor pod.', price: 1200, category: 'Incognito Special', stock: 5, image_url: 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?w=500', sellerName: 'Anonymous Seller', isIncognito: true },
       { id: 'inc-2', title: 'Stealth Black Undergarments 3-Pack', description: 'Unmarked plain delivery box.', price: 899, category: 'Incognito Special', stock: 10, image_url: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=500', sellerName: 'Anonymous Seller', isIncognito: true }
     ];
-
+ 
     function App() {
       // Firebase Auth State
       const [currentUser, setCurrentUser] = useState(null);
       const [email, setEmail] = useState('');
       const [password, setPassword] = useState('');
       const [authMode, setAuthMode] = useState('login');
-
+ 
       // Shared Global Listings & Wishlist
       const [listings, setListings] = useState(initialListings);
       const [wishlist, setWishlist] = useState([]);
-
+ 
       // Live Time & Weather Widget State
       const [time, setTime] = useState('');
       const [weather, setWeather] = useState(null);
       const [showTimeHoverMsg, setShowTimeHoverMsg] = useState(false);
-
+ 
       // UI Views & Modes
       const [darkMode, setDarkMode] = useState(true);
       const [activePage, setActivePage] = useState('explore'); // 'explore' | 'escaped'
@@ -209,16 +224,16 @@
       const [showBuyConfirmModal, setShowBuyConfirmModal] = useState(false);
       const [selectedBuyItem, setSelectedBuyItem] = useState(null);
       const [isIncognito, setIsIncognito] = useState(false);
-
+ 
       // Filters & Search
       const [searchQuery, setSearchQuery] = useState('');
       const [selectedCategory, setSelectedCategory] = useState('All');
       const [toastMessage, setToastMessage] = useState('');
-
+ 
       // Junior Uniform Timer (1 Min)
       const [showUniformTimer, setShowUniformTimer] = useState(false);
       const [timerSeconds, setTimerSeconds] = useState(60);
-
+ 
       // Create Sell Modal State
       const [showSellModal, setShowSellModal] = useState(false);
       const [formTitle, setFormTitle] = useState('');
@@ -229,23 +244,19 @@
       const [formImage, setFormImage] = useState(FALLBACK_IMAGE);
       const [formIsIncognito, setFormIsIncognito] = useState(false);
       const [isGenerating, setIsGenerating] = useState(false);
-
+ 
       // Celebration Animation & Shockwave State
       const [celebrationMsg, setCelebrationMsg] = useState('');
       const [isArrowFlying, setIsArrowFlying] = useState(false);
       const [showShockwave, setShowShockwave] = useState(false);
-
+ 
       // Floating Profile Popover State
       const [showProfileHover, setShowProfileHover] = useState(false);
-
+ 
       const ordersModalRef = useRef();
       const buyConfirmModalRef = useRef();
       const sellModalRef = useRef();
-
-      useEffect(() => {
-        if (window.lucide) window.lucide.createIcons();
-      });
-
+ 
       // Firebase Auth Listener
       useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -258,13 +269,13 @@
         });
         return () => unsubscribe();
       }, []);
-
+ 
       // Live Clock & Weather Fetch
       useEffect(() => {
         const updateTime = () => setTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
         updateTime();
         const timer = setInterval(updateTime, 1000);
-
+ 
         const fetchWeather = async () => {
           try {
             if (!WEATHER_API_KEY) {
@@ -280,11 +291,11 @@
             setWeather({ temp: 24, condition: 'Sunny' });
           }
         };
-
+ 
         fetchWeather();
         return () => clearInterval(timer);
       }, []);
-
+ 
       // 1-Minute Junior Uniform Timer
       useEffect(() => {
         if (currentUser && showUniformTimer) {
@@ -301,12 +312,12 @@
           return () => clearInterval(interval);
         }
       }, [currentUser, showUniformTimer]);
-
+ 
       const triggerToast = (msg) => {
         setToastMessage(msg);
         setTimeout(() => setToastMessage(''), 3000);
       };
-
+ 
       // CELEBRATION FLOW: Immediate Banner -> Arrow Arc -> Banner Pop & Shockwave
       const triggerArrowExplosion = (msg) => {
         setCelebrationMsg(msg);
@@ -322,7 +333,7 @@
           setTimeout(() => setCelebrationMsg(''), 4500);
         }, 1200);
       };
-
+ 
       // RESET STATE GUARD: Prevents blank screens when navigating tabs
       const resetFiltersAndNavigate = (page) => {
         setSearchQuery('');
@@ -331,12 +342,12 @@
         setActivePage(page);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       };
-
+ 
       const handleBrandClick = () => {
         setIsIncognito(false);
         resetFiltersAndNavigate('explore');
       };
-
+ 
       // Firebase Authentication Logic
       const handleFirebaseAuth = async (e) => {
         e.preventDefault();
@@ -347,7 +358,7 @@
             setAuthMode('login');
             return;
           }
-
+ 
           try {
             await auth.signInWithEmailAndPassword(email, password);
             triggerToast('Welcome back to Escape the Matrix!');
@@ -363,13 +374,13 @@
           alert(err.message);
         }
       };
-
+ 
       const handleLogout = () => {
         auth.signOut();
         setCurrentUser(null);
         triggerToast('Logged out successfully.');
       };
-
+ 
       const toggleWishlist = (id, title) => {
         if (wishlist.includes(id)) {
           setWishlist(wishlist.filter(item => item !== id));
@@ -379,7 +390,7 @@
           triggerToast(`❤️ Added "${title}" to My Favorites!`);
         }
       };
-
+ 
       const handleImageUpload = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -388,7 +399,7 @@
           reader.readAsDataURL(file);
         }
       };
-
+ 
       const handleGenerateAI = async () => {
         if (!formTitle) return alert('Please enter a product title first!');
         setIsGenerating(true);
@@ -414,7 +425,7 @@
           setIsGenerating(false);
         }
       };
-
+ 
       // Add New Product
       const handleAddListing = (e) => {
         e.preventDefault();
@@ -433,13 +444,13 @@
           isIncognito: formIsIncognito,
           isMine: true
         };
-
+ 
         if (formIsIncognito) {
           incognitoListings.unshift(newListing);
         } else {
           setListings([newListing, ...listings]);
         }
-
+ 
         setShowSellModal(false);
         setFormTitle('');
         setFormPrice('');
@@ -447,13 +458,13 @@
         resetFiltersAndNavigate('explore');
         triggerArrowExplosion(`Listing Published by ${userNameClean}! Added immediately to Explore Feed! 🎓🚀`);
       };
-
+ 
       // Toggle Sold Status
       const toggleStatus = (id) => {
         setListings(listings.map(item => item.id === id ? { ...item, status: item.status === 'available' ? 'sold' : 'available' } : item));
         triggerArrowExplosion(`Item Status Updated! 🎉`);
       };
-
+ 
       // Confirm Buy Order & Decrement Stock
       const confirmBuyOrder = () => {
         if (!selectedBuyItem) return;
@@ -471,16 +482,16 @@
         setShowBuyConfirmModal(false);
         triggerArrowExplosion(`Buy Order Finalized for "${selectedBuyItem.title}"! 🛍️🎉`);
       };
-
+ 
       // Click Outside Modal Close Handler
       const handleModalBackdropClick = (e, ref, closeFn) => {
         if (ref.current && e.target === ref.current) closeFn();
       };
-
+ 
       const myProducts = listings.filter(item => item.isMine || item.sellerEmail === currentUser?.email);
       const soldItems = myProducts.filter(item => item.status === 'sold');
       const totalEarned = soldItems.reduce((sum, item) => sum + item.price, 0);
-
+ 
       // Search & Filtering Logic
       const currentDataset = isIncognito ? incognitoListings : listings;
       const filteredListings = (currentDataset || []).filter(item => {
@@ -494,7 +505,7 @@
         const matchesPageFilter = activePage === 'escaped' ? (item.isMine || item.sellerEmail === currentUser?.email) : true;
         return matchesSearch && matchesCategory && matchesPageFilter;
       });
-
+ 
       // FIREBASE AUTH GATE
       if (!currentUser) {
         return (
@@ -502,7 +513,7 @@
             <div className="bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-2xl max-w-md w-full shadow-2xl">
               <div className="text-center mb-8">
                 <div className="inline-flex p-3 bg-amber-500/20 text-amber-400 rounded-2xl mb-3">
-                  <i data-lucide="zap" className="w-8 h-8"></i>
+                  <Icon name="zap" className="w-8 h-8" />
                 </div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">
                   Escape the Matrix
@@ -511,7 +522,7 @@
                   {authMode === 'reset' ? 'Password Reset Window' : 'Firebase Authentication Portal'}
                 </p>
               </div>
-
+ 
               <form onSubmit={handleFirebaseAuth} className="space-y-4">
                 <div>
                   <label className="block text-xs font-medium text-slate-300 mb-1">Email Address</label>
@@ -524,7 +535,7 @@
                     className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-amber-500"
                   />
                 </div>
-
+ 
                 {authMode === 'login' && (
                   <div>
                     <label className="block text-xs font-medium text-slate-300 mb-1">Password</label>
@@ -538,14 +549,14 @@
                     />
                   </div>
                 )}
-
+ 
                 <button
                   type="submit"
                   className="w-full py-2.5 bg-amber-500 hover:bg-amber-400 font-semibold rounded-lg text-sm text-slate-950 transition shadow-lg shadow-amber-500/20"
                 >
                   {authMode === 'reset' ? 'Send Password Reset Link' : 'Login / Register with Firebase'}
                 </button>
-
+ 
                 <div className="text-center pt-2">
                   {authMode === 'login' ? (
                     <button
@@ -570,31 +581,31 @@
           </div>
         );
       }
-
+ 
       return (
         <div className={`min-h-screen flex flex-col transition-colors duration-500 ${isIncognito ? 'bg-black text-rose-100' : darkMode ? 'bg-slate-950 text-slate-100' : 'bg-[#f0f4f8] text-slate-900'}`}>
           
           {/* FLYING ARROW ANIMATION */}
           {isArrowFlying && <div className="arrow-flying-celebration">🏹</div>}
-
+ 
           {/* EXPLOSION SHOCKWAVE EFFECT */}
           {showShockwave && <div className="explosion-shockwave"></div>}
-
+ 
           {/* CLEAN SINGLE-COLOR CELEBRATION BANNER */}
           {celebrationMsg && (
             <div className="fixed top-16 sm:top-20 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl shadow-2xl font-bold text-center border border-amber-500 text-xs sm:text-sm max-w-[90vw]">
               🎉 {celebrationMsg}
             </div>
           )}
-
+ 
           {/* TOAST NOTIFICATION */}
           {toastMessage && (
             <div className="fixed bottom-16 right-4 sm:right-5 z-50 bg-slate-900 text-white border border-slate-700 px-4 py-2.5 rounded-xl shadow-2xl text-xs sm:text-sm font-medium flex items-center gap-2">
-              <i data-lucide="bell" className="w-4 h-4 text-amber-400"></i>
+              <Icon name="bell" className="w-4 h-4 text-amber-400" />
               <span>{toastMessage}</span>
             </div>
           )}
-
+ 
           {/* JUNIOR UNIFORM TIMER POPUP */}
           {showUniformTimer && (
             <div className="fixed bottom-4 left-4 z-40 bg-red-950/90 border border-red-700 text-red-200 p-3 rounded-xl shadow-2xl max-w-xs sm:max-w-sm flex items-center gap-3 backdrop-blur-md">
@@ -603,23 +614,23 @@
                 <p className="font-bold text-white">Sell your uniform here for your juniors otherwise burn it and sell the ashes! 😡🔥👕</p>
               </div>
               <button onClick={() => setShowUniformTimer(false)} className="text-red-400 hover:text-white p-1">
-                <i data-lucide="x" className="w-4 h-4"></i>
+                <Icon name="x" className="w-4 h-4" />
               </button>
             </div>
           )}
-
+ 
           {/* GLOBAL HEADER - RESPONSIVE MOBILE & DESKTOP */}
           <header className={`sticky top-0 z-30 border-b backdrop-blur ${isIncognito ? 'bg-zinc-950/90 border-rose-950' : darkMode ? 'bg-slate-900/90 border-slate-800' : 'bg-white/90 border-slate-200'}`}>
             <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
               
               {/* BRAND LOGO */}
               <div className="flex items-center gap-1.5 sm:gap-2 cursor-pointer shrink-0" onClick={handleBrandClick} title="Return to Start/Explore Page">
-                <i data-lucide="zap" className="w-6 h-6 sm:w-7 sm:h-7 text-amber-500"></i>
+                <Icon name="zap" className="w-6 h-6 sm:w-7 sm:h-7 text-amber-500" />
                 <span className="font-bold text-base sm:text-xl tracking-tight bg-gradient-to-r from-amber-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">
                   Escape the Matrix
                 </span>
               </div>
-
+ 
               {/* LIVE TIME & WEATHER (DESKTOP) */}
               <div className={`hidden lg:flex items-center gap-3 px-3 py-1.5 rounded-full border text-xs font-medium ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-300' : 'bg-slate-200/80 border-slate-300 text-slate-700'}`}>
                 <div 
@@ -627,24 +638,24 @@
                   onMouseEnter={() => setShowTimeHoverMsg(true)}
                   onMouseLeave={() => setShowTimeHoverMsg(false)}
                 >
-                  <i data-lucide="clock" className="w-3.5 h-3.5"></i>
+                  <Icon name="clock" className="w-3.5 h-3.5" />
                   <span>{time || '00:00 AM'}</span>
-
+ 
                   {showTimeHoverMsg && (
                     <div className="absolute top-7 left-0 w-60 bg-slate-900 border border-slate-700 text-amber-300 text-[10px] p-2 rounded-lg shadow-xl z-50 font-normal">
                       your time's bad anyways dont see this, keep shopping
                     </div>
                   )}
                 </div>
-
+ 
                 <div className={`h-3 w-px ${darkMode ? 'bg-slate-700' : 'bg-slate-300'}`}></div>
-
+ 
                 <div className="flex items-center gap-1.5 text-indigo-400">
-                  <i data-lucide="sun" className="w-3.5 h-3.5"></i>
+                  <Icon name="sun" className="w-3.5 h-3.5" />
                   <span>{weather ? `${weather.temp}°C` : '24°C'}</span>
                 </div>
               </div>
-
+ 
               {/* CENTER NAVIGATION PILLS */}
               <div className="flex items-center gap-1 bg-slate-800/80 p-1 rounded-full border border-slate-700 text-[11px] sm:text-xs overflow-x-auto no-scrollbar max-w-[50%] sm:max-w-none">
                 <button
@@ -653,23 +664,23 @@
                 >
                   Explore
                 </button>
-
+ 
                 <button
                   onClick={() => resetFiltersAndNavigate('escaped')}
                   className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full font-semibold transition shrink-0 ${activePage === 'escaped' ? 'bg-emerald-600 text-white' : 'text-slate-300 hover:text-white'}`}
                 >
                   Seller World
                 </button>
-
+ 
                 <button
                   onClick={() => setShowOrdersModal(true)}
                   className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full font-semibold text-slate-300 hover:text-white flex items-center gap-1 shrink-0"
                 >
-                  <i data-lucide="shopping-bag" className="w-3 h-3 text-amber-400"></i>
+                  <Icon name="shopping-bag" className="w-3 h-3 text-amber-400" />
                   <span className="hidden sm:inline">My Orders</span>
                 </button>
               </div>
-
+ 
               {/* RIGHT ACTION CONTROLS */}
               <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                 <button
@@ -677,18 +688,18 @@
                   className={`p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg text-xs font-bold border transition flex items-center gap-1 ${showSwipeView ? 'bg-rose-600 text-white border-rose-500' : 'bg-slate-800 border-slate-700 text-rose-400 hover:bg-slate-700'}`}
                   title="Find Your Right Product"
                 >
-                  <i data-lucide="sparkles" className="w-4 h-4 sm:w-3.5 sm:h-3.5"></i>
+                  <Icon name="sparkles" className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
                   <span className="hidden xl:inline">Find Your Right Product</span>
                 </button>
-
+ 
                 <button
                   onClick={() => setDarkMode(!darkMode)}
                   className={`p-2 rounded-lg border transition ${darkMode ? 'border-slate-800 text-amber-400 hover:bg-slate-800' : 'border-slate-300 text-amber-600 hover:bg-slate-200 bg-white'}`}
                   title="Toggle Light/Dark Theme"
                 >
-                  <i data-lucide={darkMode ? 'sun' : 'moon'} className="w-4 h-4"></i>
+                  <Icon name={darkMode ? 'sun' : 'moon'} className="w-4 h-4" />
                 </button>
-
+ 
                 {/* FLOATING PROFILE HOVER / CLICK */}
                 <div 
                   className="relative"
@@ -701,7 +712,7 @@
                   >
                     {currentUser?.email?.[0].toUpperCase() || 'U'}
                   </button>
-
+ 
                   {showProfileHover && (
                     <div className="absolute right-0 top-10 w-52 sm:w-56 bg-slate-900 border border-slate-800 text-white rounded-2xl shadow-2xl p-4 space-y-3 z-50 text-xs">
                       <div>
@@ -710,21 +721,21 @@
                       </div>
                       <hr className="border-slate-800" />
                       <button onClick={() => alert('Payment Settings: UPI & Campus Gateway Connected')} className="w-full text-left py-1 hover:text-amber-400 flex items-center gap-2">
-                        <i data-lucide="credit-card" className="w-3.5 h-3.5"></i>
+                        <Icon name="credit-card" className="w-3.5 h-3.5" />
                         Payment Settings
                       </button>
                       <button onClick={handleLogout} className="w-full text-left py-1 text-rose-400 hover:underline flex items-center gap-2">
-                        <i data-lucide="log-out" className="w-3.5 h-3.5"></i>
+                        <Icon name="log-out" className="w-3.5 h-3.5" />
                         Logout
                       </button>
                     </div>
                   )}
                 </div>
               </div>
-
+ 
             </div>
           </header>
-
+ 
           {/* MAIN CONTAINER */}
           <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full">
             
@@ -733,14 +744,14 @@
               <div className="max-w-md mx-auto my-4 sm:my-6 space-y-4">
                 <div className="flex justify-between items-center mb-2">
                   <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2 text-rose-500">
-                    <i data-lucide="sparkles" className="w-5 h-5"></i>
+                    <Icon name="sparkles" className="w-5 h-5" />
                     Find Your Right Product
                   </h2>
                   <button onClick={() => setShowSwipeView(false)} className="text-xs text-slate-400 hover:underline">
                     Back to Grid View
                   </button>
                 </div>
-
+ 
                 {filteredListings.length > swipeCardIndex ? (
                   <div className={`p-4 sm:p-5 rounded-3xl border shadow-2xl ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
                     <div className="relative h-60 sm:h-72 w-full rounded-2xl overflow-hidden mb-4 bg-slate-800">
@@ -753,22 +764,22 @@
                         ₹{filteredListings[swipeCardIndex].price}
                       </span>
                     </div>
-
+ 
                     <h3 className="text-base sm:text-lg font-bold mb-1">{filteredListings[swipeCardIndex].title}</h3>
                     <p className="text-xs text-slate-400 mb-3 line-clamp-2">{filteredListings[swipeCardIndex].description}</p>
                     
                     <div className="text-[11px] text-indigo-400 mb-4 bg-indigo-950/30 p-2 rounded-xl">
                       👤 Seller: {filteredListings[swipeCardIndex].sellerName} • Stock: {filteredListings[swipeCardIndex].stock} left
                     </div>
-
+ 
                     <div className="flex items-center justify-around gap-4 pt-2">
                       <button 
                         onClick={() => setSwipeCardIndex(prev => prev + 1)}
                         className="p-3.5 sm:p-4 rounded-full bg-slate-800 text-rose-400 border border-slate-700 hover:bg-slate-700 transition"
                       >
-                        <i data-lucide="x" className="w-5 h-5 sm:w-6 sm:h-6"></i>
+                        <Icon name="x" className="w-5 h-5 sm:w-6 sm:h-6" />
                       </button>
-
+ 
                       <button 
                         onClick={() => {
                           setSelectedBuyItem(filteredListings[swipeCardIndex]);
@@ -776,10 +787,10 @@
                         }}
                         className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm transition flex items-center gap-2 shadow-lg shadow-amber-500/20"
                       >
-                        <i data-lucide="shopping-cart" className="w-4 h-4 sm:w-5 sm:h-5"></i>
+                        <Icon name="shopping-cart" className="w-4 h-4 sm:w-5 sm:h-5" />
                         Buy Deal
                       </button>
-
+ 
                       <button 
                         onClick={() => {
                           toggleWishlist(filteredListings[swipeCardIndex].id, filteredListings[swipeCardIndex].title);
@@ -787,7 +798,7 @@
                         }}
                         className="p-3.5 sm:p-4 rounded-full bg-slate-800 text-emerald-400 border border-slate-700 hover:bg-slate-700 transition"
                       >
-                        <i data-lucide="heart" className="w-5 h-5 sm:w-6 sm:h-6"></i>
+                        <Icon name="heart" className="w-5 h-5 sm:w-6 sm:h-6" />
                       </button>
                     </div>
                   </div>
@@ -809,13 +820,13 @@
                       <h2 className="text-lg sm:text-xl font-bold">📊 Top 5 Campus Item Quantities</h2>
                       <p className="text-[11px] sm:text-xs text-slate-400">Live units in circulation and purchase demand</p>
                     </div>
-
+ 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                       <div className={`p-4 rounded-2xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
                         <h3 className="text-xs font-bold text-slate-400 uppercase">Top 5 Most Sold Item Quantities</h3>
                         <QuantityBarChart data={quantityAnalyticsData} dataKey="sellQty" color="#f59e0b" />
                       </div>
-
+ 
                       <div className={`p-4 rounded-2xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
                         <h3 className="text-xs font-bold text-slate-400 uppercase">Top 5 Highest Demanded Quantities</h3>
                         <QuantityBarChart data={quantityAnalyticsData} dataKey="buyQty" color="#10b981" />
@@ -823,7 +834,7 @@
                     </div>
                   </div>
                 )}
-
+ 
                 {/* SELLER WORLD HEADING & ANALYTICS */}
                 {activePage === 'escaped' && (
                   <div className="space-y-6 mb-8">
@@ -836,14 +847,14 @@
                         onClick={() => setShowSellModal(true)}
                         className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-5 py-2.5 rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30"
                       >
-                        <i data-lucide="plus-circle" className="w-4 h-4"></i>
+                        <Icon name="plus-circle" className="w-4 h-4" />
                         Sell an Item
                       </button>
                     </div>
-
+ 
                     <div className={`p-5 sm:p-6 rounded-2xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
                       <h3 className="text-xs sm:text-sm font-bold text-amber-400 uppercase mb-3 flex items-center gap-2">
-                        <i data-lucide="trending-up" className="w-4 h-4"></i>
+                        <Icon name="trending-up" className="w-4 h-4" />
                         Best Times of Year to Sell Products
                       </h3>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
@@ -861,11 +872,13 @@
                     </div>
                   </div>
                 )}
-
+ 
                 {/* SEARCH & FILTERS BAR */}
                 <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
                   <div className="relative flex-1 w-full">
-                    <i data-lucide="search" className="absolute left-3 top-3 h-4 w-4 text-slate-400"></i>
+                    <span className="absolute left-3 top-3 h-4 w-4 text-slate-400 flex items-center">
+                      <Icon name="search" className="h-4 w-4" />
+                    </span>
                     <input
                       type="text"
                       placeholder="what do you want?"
@@ -874,7 +887,7 @@
                       className={`w-full pl-9 pr-4 py-2 sm:py-2.5 border rounded-xl text-xs sm:text-sm outline-none ${darkMode ? 'bg-slate-900 border-slate-800 focus:border-amber-500 text-white' : 'bg-white border-slate-300 text-slate-900'}`}
                     />
                   </div>
-
+ 
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
@@ -889,7 +902,7 @@
                     <option value="Cheaper than your College">Cheaper than your College</option>
                   </select>
                 </div>
-
+ 
                 {/* PRODUCT LISTINGS GRID */}
                 {filteredListings.length === 0 ? (
                   <div className={`text-center py-16 px-4 rounded-2xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
@@ -906,7 +919,7 @@
                     {filteredListings.map((item) => {
                       const isWishlisted = wishlist.includes(item.id);
                       const isOutOfStock = item.status === 'sold' || item.stock === 0;
-
+ 
                       return (
                         <div key={item.id} className={`image-card-container rounded-2xl overflow-hidden border transition flex flex-col ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
                           <div className="relative h-44 sm:h-48 w-full bg-slate-800 overflow-hidden">
@@ -922,15 +935,15 @@
                                 <span className="bg-rose-600 text-white text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Out of Stock</span>
                               </div>
                             )}
-
+ 
                             <button
                               onClick={() => toggleWishlist(item.id, item.title)}
                               className="absolute top-2 right-2 p-2 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white transition z-10"
                             >
-                              <i data-lucide="heart" className={`w-4 h-4 ${isWishlisted ? 'fill-rose-400 text-rose-400' : 'text-slate-300'}`}></i>
+                              <Icon name="heart" className={`w-4 h-4 ${isWishlisted ? 'fill-rose-400 text-rose-400' : 'text-slate-300'}`} />
                             </button>
                           </div>
-
+ 
                           <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
                             <div>
                               <div className="flex justify-between items-start mb-1.5 gap-2">
@@ -946,13 +959,13 @@
                                 </span>
                               </div>
                             </div>
-
+ 
                             <div className="flex items-center justify-between border-t border-slate-800 pt-3 mt-auto">
                               <span className={`inline-flex items-center gap-1 text-[10px] sm:text-xs px-2 py-0.5 rounded ${darkMode ? 'bg-slate-800 text-slate-400' : 'bg-slate-200 text-slate-600'}`}>
-                                <i data-lucide="tag" className="w-3 h-3"></i>
+                                <Icon name="tag" className="w-3 h-3" />
                                 {item.category}
                               </span>
-
+ 
                               {activePage === 'escaped' ? (
                                 <button
                                   onClick={() => toggleStatus(item.id)}
@@ -960,7 +973,7 @@
                                     item.status === 'available' ? 'text-amber-400 bg-amber-500/20' : 'text-emerald-400 bg-emerald-500/20'
                                   }`}
                                 >
-                                  <i data-lucide="check-circle-2" className="w-3 h-3"></i>
+                                  <Icon name="check-circle-2" className="w-3 h-3" />
                                   Mark {item.status === 'available' ? 'Sold' : 'Available'}
                                 </button>
                               ) : (
@@ -986,7 +999,7 @@
               </>
             )}
           </main>
-
+ 
           {/* BUY CONFIRMATION POPUP */}
           {showBuyConfirmModal && selectedBuyItem && (
             <div 
@@ -1010,7 +1023,7 @@
               </div>
             </div>
           )}
-
+ 
           {/* FLOATING MY ORDERS MODAL */}
           {showOrdersModal && (
             <div 
@@ -1021,14 +1034,14 @@
               <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-5 sm:p-6 shadow-2xl space-y-6 text-white max-h-[90vh] overflow-y-auto">
                 <div className="flex justify-between items-center border-b border-slate-800 pb-3">
                   <h3 className="text-base sm:text-lg font-bold flex items-center gap-2">
-                    <i data-lucide="shopping-bag" className="w-5 h-5 text-amber-400"></i>
+                    <Icon name="shopping-bag" className="w-5 h-5 text-amber-400" />
                     My Orders & Financial Summary
                   </h3>
                   <button onClick={() => setShowOrdersModal(false)} className="text-slate-400 hover:text-white p-1">
-                    <i data-lucide="x" className="w-5 h-5"></i>
+                    <Icon name="x" className="w-5 h-5" />
                   </button>
                 </div>
-
+ 
                 <div className="grid grid-cols-2 gap-3 sm:gap-4">
                   <div className="bg-slate-800/80 p-3.5 sm:p-4 rounded-xl border border-slate-700">
                     <p className="text-[10px] text-slate-400 uppercase font-bold">Total Sales Earned</p>
@@ -1039,7 +1052,7 @@
                     <p className="text-xl sm:text-2xl font-extrabold text-amber-400 mt-1">₹1,150</p>
                   </div>
                 </div>
-
+ 
                 <div>
                   <h4 className="text-xs font-bold text-slate-400 uppercase mb-2">Sold Items ({soldItems.length})</h4>
                   {soldItems.length === 0 ? (
@@ -1058,7 +1071,7 @@
               </div>
             </div>
           )}
-
+ 
           {/* SELL AN ITEM MODAL */}
           {showSellModal && (
             <div 
@@ -1070,10 +1083,10 @@
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-base sm:text-lg font-bold">Sell an Item</h2>
                   <button onClick={() => setShowSellModal(false)} className="text-slate-400 hover:text-white p-1">
-                    <i data-lucide="x" className="w-5 h-5"></i>
+                    <Icon name="x" className="w-5 h-5" />
                   </button>
                 </div>
-
+ 
                 <form onSubmit={handleAddListing} className="space-y-4">
                   <div className="bg-slate-800 p-1.5 rounded-xl flex items-center justify-between text-xs">
                     <span className="font-semibold text-slate-300">Listing Mode:</span>
@@ -1094,7 +1107,7 @@
                       </button>
                     </div>
                   </div>
-
+ 
                   <div>
                     <label className="block text-xs font-medium mb-1">Product Title</label>
                     <input
@@ -1106,7 +1119,7 @@
                       className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs sm:text-sm outline-none"
                     />
                   </div>
-
+ 
                   <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
                     <div>
                       <label className="block text-xs font-medium mb-1">Category</label>
@@ -1146,7 +1159,7 @@
                       />
                     </div>
                   </div>
-
+ 
                   <div>
                     <label className="block text-xs font-medium mb-1">Attach Image (JPG / PNG)</label>
                     <input
@@ -1156,7 +1169,7 @@
                       className="text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400"
                     />
                   </div>
-
+ 
                   <div>
                     <div className="flex justify-between items-center mb-1">
                       <label className="text-xs font-medium">Description</label>
@@ -1166,7 +1179,7 @@
                         disabled={isGenerating}
                         className="text-[11px] text-amber-400 hover:text-amber-300 flex items-center gap-1 font-medium"
                       >
-                        <i data-lucide="sparkles" className="w-3 h-3"></i>
+                        <Icon name="sparkles" className="w-3 h-3" />
                         {isGenerating ? 'Generating...' : 'Auto-Generate with AI'}
                       </button>
                     </div>
@@ -1178,7 +1191,7 @@
                       className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs sm:text-sm outline-none"
                     ></textarea>
                   </div>
-
+ 
                   <div className="flex justify-end gap-2 pt-2">
                     <button
                       type="button"
@@ -1198,7 +1211,7 @@
               </div>
             </div>
           )}
-
+ 
           {/* INCOGNITO STEALTH TOGGLE */}
           <div className="fixed bottom-4 right-4 z-40">
             <button
@@ -1210,17 +1223,19 @@
                 isIncognito ? 'bg-rose-950 border-rose-700 text-rose-300' : 'bg-slate-900 border-slate-700 text-slate-300 hover:bg-slate-800'
               }`}
             >
-              <i data-lucide="eye-off" className="w-4 h-4 text-rose-400"></i>
+              <Icon name="eye-off" className="w-4 h-4 text-rose-400" />
               <span>{isIncognito ? 'Exit Incognito' : 'Incognito 🕵️‍♂️'}</span>
             </button>
           </div>
-
+ 
         </div>
       );
     }
-
+ 
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<App />);
   </script>
 </body>
 </html>
+ 
+Claude finished the response
